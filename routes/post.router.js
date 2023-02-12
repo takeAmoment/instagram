@@ -3,6 +3,17 @@ const router = Router();
 const auth = require("../middleware/auth.middleware");
 const Post = require("../models/post");
 
+router.get("/posts", auth, async (req, res) => {
+    try {
+
+        const posts = await Post.find();
+        res.json({posts});
+        
+    } catch (error) {
+        res.status(500).json({message: "Server error"});
+    }
+})
+
 router.post("/create", auth, async(req, res) => {
     try {
         const { title, body, photo } = req.body;
@@ -18,6 +29,7 @@ router.post("/create", auth, async(req, res) => {
     } catch (error) {
         res.status(500).json({message: "Server error"});
     }
-} )
+});
+
 
 module.exports = router;
