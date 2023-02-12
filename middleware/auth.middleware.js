@@ -15,13 +15,12 @@ module.exports = async (req, res, next) => {
         };
 
         const decoded = jwt.verify(token, JWT_SECRET);
-        console.log(decoded.id);
 
         const user = await User.findOne({_id: decoded.id});
         if (!user) {
             return res.status(400).json({message: "Uncorrect token"});
-        };  
-        res.user = decoded;
+        }; 
+        req.user = decoded;
         next();
 
         
