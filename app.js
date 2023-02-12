@@ -9,6 +9,7 @@ mongoose.set("strictQuery", false);
 
 app.use(express.json());
 app.use(require("./routes/auth.router"));
+app.use(require("./routes/post.router"));
 
 async function start() {
     try {
