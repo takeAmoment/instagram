@@ -31,5 +31,15 @@ router.post("/create", auth, async(req, res) => {
     }
 });
 
+router.get("/userposts", auth, async (req, res) => {
+    try {
+
+        const posts = await Post.find({postedBy: req.user.id});
+        res.json({posts});
+        
+    } catch (error) {
+        res.status(500).json({message: "Server error"});
+    }
+})
 
 module.exports = router;
