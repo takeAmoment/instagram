@@ -1,7 +1,6 @@
 import LayoutComponent from 'components/Layout/Layout';
 import WelcomePage from 'pages/WelcomePage/WelcomePage';
 import LoginPage from 'pages/LoginPage/LoginPage';
-import RegisterPage from 'pages/RegisterPage';
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
