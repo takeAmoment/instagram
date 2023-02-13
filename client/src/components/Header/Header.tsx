@@ -14,7 +14,7 @@ const HeaderOfApp = () => {
       <Link to="/" className={styles.header__logo}>
         <div>Instagram</div>
       </Link>
-      <Menu theme="light" mode="horizontal" items={items} />
+      <Menu theme="light" mode="horizontal" selectedKeys={[location.pathname]} items={items} />
     </Header>
   );
 };
