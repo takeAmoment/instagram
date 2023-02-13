@@ -1,6 +1,6 @@
 import LayoutComponent from 'components/Layout/Layout';
 import WelcomePage from 'pages/WelcomePage/WelcomePage';
-import LoginPage from 'pages/LoginPage';
+import LoginPage from 'pages/LoginPage/LoginPage';
 import RegisterPage from 'pages/RegisterPage';
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
@@ -19,7 +19,7 @@ function App() {
         <Route path="/" element={<LayoutComponent />}>
           <Route index element={<WelcomePage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/register" element={<LoginPage />} />
         </Route>
       </Routes>
     </ConfigProvider>

@@ -1,0 +1,31 @@
+$primary-color: #36cfc9;
+.container {
+    background-color: #fff;
+    min-height: 85vh;
+    margin-top: 2px;
+    padding: 1rem;
+}
+.form {
+    margin-top: 3rem;
+    padding: 2rem;
+    box-shadow: 0rem 0rem 0.2rem 0.01rem rgba(0, 0, 0, 0.374);
+    .form__message{
+        font-size: 14px;
+        text-align: center;
+        font-style: italic;
+        margin-bottom: 1.5rem;
+        margin-top: 1rem;
+        text-decoration: underline;
+        &:hover {
+            opacity: 0.6;
+            transition: all 0.3s;
+        }
+    }
+    .form__icon {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 2rem;
+    }
+}
