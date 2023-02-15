@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 
-const PORT = 3001;
+const PORT = 3002;
 const {mongodbUri} = require("./keys");
 
 mongoose.set("strictQuery", false);
