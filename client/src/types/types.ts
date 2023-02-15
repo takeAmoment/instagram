@@ -5,12 +5,12 @@ export interface RegisterInfo {
   email: string;
   password: string;
 }
-
+export interface UserData {
+  userId: string;
+  token: string;
+}
 export interface AuthInitialState {
-  userData: {
-    userId: string;
-    token: string;
-  };
+  userData: UserData;
   status: 'idle' | 'loading' | 'failed';
   error: AxiosError | null;
 }
