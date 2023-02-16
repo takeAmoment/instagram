@@ -1,22 +1,27 @@
 import { LockOutlined } from '@ant-design/icons';
 import { Button, Col, Form, Input, Row, Typography } from 'antd';
 import { Content } from 'antd/es/layout/layout';
+import { loginUser, registerUser } from 'features/auth.slice';
+import { useAppDispath } from 'hooks/hooks';
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { RegisterInfo } from 'types/types';
 import styles from './LoginPage.module.scss';
 const { Paragraph } = Typography;
 
-const onFinish = (values: object) => {
-  console.log('Success:', values);
-};
-
-const onFinishFailed = (errorInfo: object) => {
-  console.log('Failed:', errorInfo);
-};
-
 const LoginPage = () => {
   const location = useLocation();
+  const dispatch = useAppDispath();
   const [form] = Form.useForm();
+
+  const onFinish = (values: RegisterInfo) => {
+    if (location.pathname === '/register') {
+      dispatch(registerUser(values));
+    } else if (location.pathname === '/login') {
+      dispatch(loginUser(values));
+    }
+    form.resetFields();
+  };
   return (
     <Content>
       <div className={styles.container}>
@@ -29,24 +34,15 @@ const LoginPage = () => {
               wrapperCol={{ span: 16 }}
               className={styles.form}
               onFinish={onFinish}
-              onFinishFailed={onFinishFailed}
               autoComplete="off"
             >
               <div className={styles.form__icon}>
-                <LockOutlined
-                  style={{
-                    fontSize: '48px',
-                    color: '#bae0ff',
-                    border: '3px solid #bae0ff',
-                    borderRadius: '50%',
-                    padding: '10px',
-                  }}
-                />
+                <LockOutlined className={styles.icon__lock} />
               </div>
               {location.pathname === '/register' && (
                 <Form.Item
                   label="Username"
-                  name="username"
+                  name="name"
                   rules={[{ required: true, message: 'Please input your username!' }]}
                 >
                   <Input />

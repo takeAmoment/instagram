@@ -27,5 +27,12 @@ $primary-color: #36cfc9;
         align-items: center;
         justify-content: center;
         margin-bottom: 2rem;
+        .icon__lock {
+            font-size: 3rem;
+            color: #bae0ff;
+            border: 3px solid #bae0ff;
+            border-radius: 50%;
+            padding: 1rem;
+        }
     }
 }
