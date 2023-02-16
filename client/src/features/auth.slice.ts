@@ -67,3 +67,5 @@ export const authSlice = createSlice({
       });
   },
 });
+
+export const authReducer = authSlice.reducer;
