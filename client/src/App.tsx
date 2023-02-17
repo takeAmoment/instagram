@@ -6,6 +6,7 @@ import { Routes, Route } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import HomePage from 'pages/HomePage/HomePage';
 import ProfilePage from 'pages/ProfilePage/ProfilePage';
+import CreatePostPage from 'pages/CreatePostPage/CreatePostPage';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<LoginPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/createpost" element={<CreatePostPage />} />
         </Route>
       </Routes>
     </ConfigProvider>

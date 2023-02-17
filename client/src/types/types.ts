@@ -1,3 +1,4 @@
+import { UploadFile } from 'antd';
 import { AxiosError } from 'axios';
 
 export interface RegisterInfo {
@@ -18,3 +19,9 @@ export interface AuthInitialState {
 export type Message = {
   message: string;
 };
+
+export interface CreatePostInfo {
+  title: string;
+  body: string;
+  files: UploadFile[];
+}
