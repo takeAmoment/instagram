@@ -2,6 +2,7 @@ const { Router } = require("express");
 const router = Router();
 const auth = require("../middleware/auth.middleware");
 const Post = require("../models/post");
+const Uuid = require("uuid");
 
 router.get("/posts", auth, async (req, res) => {
     try {
@@ -16,17 +17,26 @@ router.get("/posts", auth, async (req, res) => {
 
 router.post("/create", auth, async(req, res) => {
     try {
-        const { title, body, photo } = req.body;
+        const { title, body } = req.body;
+        const file = req.files.file;
 
-        if(!title || !body) {
+        if(!title || !body || !file) {
             return res.status(422).json({message: "Uncorrect data"});
         }
        
-        const post = new Post({title, body, photo, postedBy: req.user.id});
+        const fileName = Uuid.v4() + file.name;
+        file.mv(`/Users/sasha/Desktop/code/express/insta/instagram/client/public/uploads/${fileName}`, err => {
+            if (err) {
+                console.log(err);
+                res.status(500).send(err);
+            }
+        });
+        const post = new Post({title, body, photo: fileName, postedBy: req.user.id});
 
         await post.save();
         res.status(201).json({message: "post was created"})
     } catch (error) {
+        console.log(error);
         res.status(500).json({message: "Server error"});
     }
 });
@@ -40,6 +50,7 @@ router.get("/userposts", auth, async (req, res) => {
     } catch (error) {
         res.status(500).json({message: "Server error"});
     }
-})
+});
+
 
 module.exports = router;

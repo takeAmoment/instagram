@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
+const fileUpload = require("express-fileupload");
 
 const PORT = 3002;
 const {mongodbUri} = require("./keys");
@@ -8,6 +9,9 @@ const {mongodbUri} = require("./keys");
 mongoose.set("strictQuery", false);
 
 app.use(express.json());
+app.use(fileUpload({
+    createParentPath: true
+}));
 app.use(require("./routes/auth.router"));
 app.use(require("./routes/post.router"));
 
