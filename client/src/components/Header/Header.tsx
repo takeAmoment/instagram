@@ -1,6 +1,6 @@
 import { Header } from 'antd/es/layout/layout';
-import Menu, { MenuProps } from 'antd/es/menu';
-import React, { useState } from 'react';
+import Menu from 'antd/es/menu';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styles from './Header.module.scss';
 
@@ -13,7 +13,6 @@ const items = [
 const HeaderOfApp = () => {
   const location = useLocation();
 
-  console.log(location.pathname.slice(1));
   return (
     <Header className={styles.header}>
       <Link to="/" className={styles.header__logo}>
