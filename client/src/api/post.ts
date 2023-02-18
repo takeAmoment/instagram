@@ -9,3 +9,5 @@ export const createPostApi = async (request: FormData) =>
   });
 
 export const getAllPostsApi = async () => await axios.get('/posts');
+
+export const getUserPostsApi = async () => await axios.get('/userposts');
