@@ -25,3 +25,14 @@ export interface CreatePostInfo {
   body: string;
   files: UploadFile[];
 }
+export interface UsersPost {
+  tilte: string;
+  body: string;
+  photo: string;
+}
+
+export interface PostInitialState {
+  usersPosts: UsersPost[];
+  allPosts: UsersPost[];
+  status: 'idle' | 'loading' | 'failed';
+}

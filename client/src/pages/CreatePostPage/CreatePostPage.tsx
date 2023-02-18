@@ -3,13 +3,14 @@ import { Button, Form, Input } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { Content } from 'antd/es/layout/layout';
 import Upload, { RcFile } from 'antd/es/upload';
-import { createPostApi } from '../../api/index';
 import React from 'react';
 import styles from './CreatePostPage.module.scss';
 import { CreatePostInfo } from 'types/types';
+import { useAppDispath } from 'hooks/hooks';
+import { createPost } from 'features/post.slice';
 
 const CreatePostPage = () => {
-  const [form] = Form.useForm();
+  const dispatch = useAppDispath();
   const uploadButton = (
     <div>
       <PlusOutlined />
@@ -22,12 +23,10 @@ const CreatePostPage = () => {
     formData.append('title', values.title);
     formData.append('body', values.body);
     formData.append('file', values.files[0].originFileObj as RcFile);
-    createPostApi(formData).then((response) => console.log(response));
-    form.resetFields();
+    dispatch(createPost(formData));
   };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getFile = (e: any) => {
-    console.log('Upload event:', e);
     if (Array.isArray(e)) {
       return e;
     }
@@ -59,10 +58,15 @@ const CreatePostPage = () => {
             rules={[{ required: true, message: 'Please choose a photo' }]}
           >
             <Upload
+              accept=".png,.jpeg,.jpg"
               name="photos"
               maxCount={1}
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+              action="https://localhost:3000"
               listType="picture-card"
+              beforeUpload={(file) => {
+                console.log(file);
+                return false;
+              }}
             >
               {uploadButton}
             </Upload>
