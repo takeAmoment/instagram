@@ -4,21 +4,23 @@ import { Content } from 'antd/es/layout/layout';
 import { loginUser, registerUser } from 'features/auth.slice';
 import { useAppDispath } from 'hooks/hooks';
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { RegisterInfo } from 'types/types';
 import styles from './LoginPage.module.scss';
 const { Paragraph } = Typography;
 
 const LoginPage = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const dispatch = useAppDispath();
   const [form] = Form.useForm();
 
-  const onFinish = (values: RegisterInfo) => {
+  const onFinish = async (values: RegisterInfo) => {
     if (location.pathname === '/register') {
-      dispatch(registerUser(values));
+      await dispatch(registerUser(values));
     } else if (location.pathname === '/login') {
-      dispatch(loginUser(values));
+      await dispatch(loginUser(values));
+      navigate('/', { replace: true });
     }
     form.resetFields();
   };

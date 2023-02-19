@@ -5,13 +5,16 @@ import { Link, useLocation } from 'react-router-dom';
 import styles from './Header.module.scss';
 
 const items = [
-  { label: <Link to="/profile">Profile</Link>, key: 'profile' },
-  { label: <Link to="/createpost">Create post</Link>, key: 'createpost' },
   { label: <Link to="/login">Login</Link>, key: 'login' },
   { label: <Link to="/register">Sign up</Link>, key: 'register' },
 ];
+const itemsRegisterUser = [
+  { label: <Link to="/profile">Profile</Link>, key: 'profile' },
+  { label: <Link to="/createpost">Create post</Link>, key: 'createpost' },
+];
 const HeaderOfApp = () => {
   const location = useLocation();
+  const token = localStorage.getItem('token') ?? null;
 
   return (
     <Header className={styles.header}>
@@ -22,7 +25,7 @@ const HeaderOfApp = () => {
         theme="light"
         mode="horizontal"
         selectedKeys={[location.pathname.slice(1)]}
-        items={items}
+        items={token ? itemsRegisterUser : items}
         style={{ width: '100%', display: 'flex', justifyContent: 'end' }}
       />
     </Header>
