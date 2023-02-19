@@ -1,5 +1,4 @@
 import LayoutComponent from 'components/Layout/Layout';
-import WelcomePage from 'pages/WelcomePage/WelcomePage';
 import LoginPage from 'pages/LoginPage/LoginPage';
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
@@ -7,6 +6,7 @@ import { ConfigProvider } from 'antd';
 import HomePage from 'pages/HomePage/HomePage';
 import ProfilePage from 'pages/ProfilePage/ProfilePage';
 import CreatePostPage from 'pages/CreatePostPage/CreatePostPage';
+import ProtectedRoute from 'components/ProtectedRoute/ProtectedRoute';
 
 function App() {
   return (
@@ -22,8 +22,22 @@ function App() {
           <Route index element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<LoginPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/createpost" element={<CreatePostPage />} />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/createpost"
+            element={
+              <ProtectedRoute>
+                <CreatePostPage />
+              </ProtectedRoute>
+            }
+          />
         </Route>
       </Routes>
     </ConfigProvider>
