@@ -26,7 +26,8 @@ export interface CreatePostInfo {
   files: UploadFile[];
 }
 export interface UsersPost {
-  tilte: string;
+  _id: string;
+  title: string;
   body: string;
   photo: string;
 }
@@ -35,4 +36,8 @@ export interface PostInitialState {
   usersPosts: UsersPost[];
   allPosts: UsersPost[];
   status: 'idle' | 'loading' | 'failed';
+}
+
+export interface PostProps {
+  post: UsersPost;
 }
