@@ -7,8 +7,13 @@ const router = express.Router();
 const auth = require("../middleware/auth.middleware");
 
 
-router.get("/", auth, async (req, res) => {
-    res.send("hello");
+router.get("/user", auth, async (req, res) => {
+    try {
+        const user = await User.findById({_id: req.user.id})
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({message: "Server error"})
+    }
 });
 
 router.post("/signup",  async (req, res) => {
