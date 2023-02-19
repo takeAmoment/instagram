@@ -13,7 +13,6 @@ const HeartIcon = (props: Partial<CustomIconComponentProps>) => (
 );
 
 const Post: FC<PostProps> = ({ post }) => {
-  console.log(post);
   return (
     <Card style={{ width: 600 }} cover={<img alt="example" src={`./uploads/${post.photo}`} />}>
       <Space size={10} align="center">
