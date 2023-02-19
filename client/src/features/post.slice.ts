@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createPostApi, getAllPostsApi } from 'api';
+import { createPostApi, getAllPostsApi, getUserPostsApi } from 'api';
 import { isAxiosError } from 'axios';
 import { PostInitialState } from 'types/types';
 
@@ -23,6 +23,17 @@ export const createPost = createAsyncThunk('post/create', async (request: FormDa
 export const getAllPosts = createAsyncThunk('allposts/get', async () => {
   try {
     const response = await getAllPostsApi();
+    return response.data;
+  } catch (error) {
+    if (isAxiosError(error)) {
+      console.log(error);
+    }
+  }
+});
+
+export const getUserPosts = createAsyncThunk('userPosts/get', async () => {
+  try {
+    const response = await getUserPostsApi();
     return response.data;
   } catch (error) {
     if (isAxiosError(error)) {
@@ -58,6 +69,17 @@ export const postSlice = createSlice({
       .addCase(getAllPosts.rejected, (state) => {
         state.status = 'failed';
         state.allPosts = [];
+      })
+      .addCase(getUserPosts.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(getUserPosts.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.usersPosts = action.payload.posts;
+      })
+      .addCase(getUserPosts.rejected, (state) => {
+        state.status = 'failed';
+        state.usersPosts = [];
       });
   },
 });

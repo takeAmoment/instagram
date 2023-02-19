@@ -1,11 +1,20 @@
 import { Col, Divider, Row, Typography } from 'antd';
 import { Content } from 'antd/es/layout/layout';
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './ProfilePage.module.scss';
 import { Image } from 'antd';
+import { useAppDispath, useAppSelector } from 'hooks/hooks';
+import { getUserPosts } from 'features/post.slice';
 const { Title, Paragraph, Text } = Typography;
 
 const ProfilePage = () => {
+  const posts = useAppSelector((state) => state.post.usersPosts);
+  const dispatch = useAppDispath();
+
+  useEffect(() => {
+    dispatch(getUserPosts());
+  }, [dispatch]);
+
   return (
     <Content>
       <div className={styles.container}>
@@ -55,49 +64,25 @@ const ProfilePage = () => {
         </section>
         <Divider />
         <section className={styles.gallery}>
-          <Row justify="center" gutter={[16, 16]}>
-            <Col xs={{ span: 20 }} sm={{ span: 20 }} md={{ span: 6 }} lg={{ span: 6 }}>
-              <Row justify="center">
-                <Col>
-                  <Image src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
-                </Col>
-              </Row>
-            </Col>
-            <Col xs={{ span: 20 }} sm={{ span: 20 }} md={{ span: 6 }} lg={{ span: 6 }}>
-              <Row justify="center">
-                <Col>
-                  <Image src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
-                </Col>
-              </Row>
-            </Col>
-            <Col xs={{ span: 20 }} sm={{ span: 20 }} md={{ span: 6 }} lg={{ span: 6 }}>
-              <Row justify="center">
-                <Col>
-                  <Image src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
-                </Col>
-              </Row>
-            </Col>
-            <Col xs={{ span: 20 }} sm={{ span: 20 }} md={{ span: 6 }} lg={{ span: 6 }}>
-              <Row justify="center">
-                <Col>
-                  <Image src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
-                </Col>
-              </Row>
-            </Col>
-            <Col xs={{ span: 20 }} sm={{ span: 20 }} md={{ span: 6 }} lg={{ span: 6 }}>
-              <Row justify="center">
-                <Col>
-                  <Image src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
-                </Col>
-              </Row>
-            </Col>
-            <Col xs={{ span: 20 }} sm={{ span: 20 }} md={{ span: 6 }} lg={{ span: 6 }}>
-              <Row justify="center">
-                <Col>
-                  <Image src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
-                </Col>
-              </Row>
-            </Col>
+          <Row justify="center" gutter={[8, 8]}>
+            {posts.length > 0 &&
+              posts.map((post) => {
+                return (
+                  <Col
+                    xs={{ span: 20 }}
+                    sm={{ span: 20 }}
+                    md={{ span: 8 }}
+                    lg={{ span: 6 }}
+                    key={post._id}
+                  >
+                    <Row justify="center">
+                      <Col>
+                        <Image src={`./uploads/${post.photo}`} />
+                      </Col>
+                    </Row>
+                  </Col>
+                );
+              })}
           </Row>
         </section>
       </div>
