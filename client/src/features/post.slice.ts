@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createPostApi } from 'api';
+import { createPostApi, getAllPostsApi } from 'api';
 import { isAxiosError } from 'axios';
 import { PostInitialState } from 'types/types';
 
@@ -12,6 +12,17 @@ const initialState: PostInitialState = {
 export const createPost = createAsyncThunk('post/create', async (request: FormData) => {
   try {
     const response = await createPostApi(request);
+    return response.data;
+  } catch (error) {
+    if (isAxiosError(error)) {
+      console.log(error);
+    }
+  }
+});
+
+export const getAllPosts = createAsyncThunk('allposts/get', async () => {
+  try {
+    const response = await getAllPostsApi();
     return response.data;
   } catch (error) {
     if (isAxiosError(error)) {
@@ -34,6 +45,21 @@ export const postSlice = createSlice({
       })
       .addCase(createPost.rejected, (state) => {
         state.status = 'failed';
+      })
+      .addCase(getAllPosts.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(getAllPosts.fulfilled, (state, action) => {
+        state.status = 'idle';
+        if (action.payload) {
+          state.allPosts = action.payload.posts;
+        }
+      })
+      .addCase(getAllPosts.rejected, (state) => {
+        state.status = 'failed';
+        state.allPosts = [];
       });
   },
 });
+
+export const postReducer = postSlice.reducer;
