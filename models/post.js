@@ -13,6 +13,7 @@ const postSchema = new Schema({
         type: String,
         default: "no photo",
     },
+    likes: [{ type: Types.ObjectId, ref: "User"}],
     postedBy: {
         type: Types.ObjectId,
         ref: "User",
