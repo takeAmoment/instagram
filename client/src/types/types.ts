@@ -30,6 +30,7 @@ export interface UsersPost {
   title: string;
   body: string;
   photo: string;
+  likes: string[];
 }
 
 export interface PostInitialState {
@@ -40,4 +41,8 @@ export interface PostInitialState {
 
 export interface PostProps {
   post: UsersPost;
+}
+
+export interface PostId {
+  postId: string;
 }
