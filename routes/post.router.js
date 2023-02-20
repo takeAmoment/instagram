@@ -77,5 +77,40 @@ router.put("/unlike", auth, async (req, res) => {
     }
 });
 
+router.put("/addComment", auth, async (req, res) => {
+    try {
+        const options = { new: true };
+        const comment = {
+            text: req.body.text,
+            postedBy: req.user,
+        }
+        const updatedPost = await Post.findByIdAndUpdate(req.body.postId, {
+            $push: {comments: comment}
+        }, options).populate("comments.postedBy", "_id name");
+
+        res.json(updatedPost);
+        
+    } catch (error) {
+       res.status(500).json({message: "Server error"}); 
+    }
+});
+router.put("/removeComment", auth, async (req, res) => {
+    try {
+        const options = { new: true };
+        const comment = {
+            text: req.body.text,
+            postedBy: req.user,
+        }
+        const updatedPost = await Post.findByIdAndUpdate(req.body.postId, {
+            $push: {comments: comment}
+        }, options).populate("comments.postedBy", "_id name");
+
+        res.json(updatedPost);
+        
+    } catch (error) {
+       res.status(500).json({message: "Server error"}); 
+    }
+});
+
 
 module.exports = router;
