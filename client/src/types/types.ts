@@ -38,7 +38,10 @@ export interface UsersPost {
   _id: string;
   title: string;
   body: string;
-  postedBy: string;
+  postedBy: {
+    _id: string;
+    name: string;
+  };
   photo: string;
   likes: string[];
   comments: Comment[];

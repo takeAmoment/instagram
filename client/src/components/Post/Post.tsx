@@ -1,6 +1,6 @@
 import { DeleteOutlined, HeartOutlined } from '@ant-design/icons';
 import Icon, { CustomIconComponentProps } from '@ant-design/icons/lib/components/Icon';
-import { Card, Form, Input, Space, Typography, Image, Button } from 'antd';
+import { Card, Form, Input, Space, Typography, Button } from 'antd';
 import { addComment, deletePost, likePost, removeComment, unlikePost } from 'features/post.slice';
 import { useAppDispath } from 'hooks/hooks';
 import React, { FC } from 'react';
@@ -16,7 +16,7 @@ const Post: FC<PostProps> = ({ post }) => {
   const id = localStorage.getItem('userId');
   const dispatch = useAppDispath();
   const [form] = Form.useForm();
-  const myPost = post.postedBy === id;
+  const myPost = post.postedBy._id === id;
   const handleClick = async () => {
     const id = localStorage.getItem('userId');
     if (id && !post.likes.includes(id)) {
@@ -57,7 +57,7 @@ const Post: FC<PostProps> = ({ post }) => {
       cover={
         <>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <p>hgsdlfhsd</p>
+            <Title level={5}>{post.postedBy.name}</Title>
             {myPost && <Button onClick={handleDeletePost}>delete</Button>}
           </div>
           <img alt="example" src={`./uploads/${post.photo}`} />
