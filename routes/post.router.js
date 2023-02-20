@@ -96,14 +96,9 @@ router.put("/addComment", auth, async (req, res) => {
 router.put("/removeComment", auth, async (req, res) => {
     try {
         const options = { new: true };
-        const comment = {
-            text: req.body.text,
-            postedBy: req.user,
-        }
         const updatedPost = await Post.findByIdAndUpdate(req.body.postId, {
-            $pull: {comments: comment}
-        }, options);
-
+            $pull: { comments: {_id: req.body._id } }
+        }, options).populate("comments.postedBy", "_id name");
         res.json(updatedPost);
         
     } catch (error) {
