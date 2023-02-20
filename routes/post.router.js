@@ -7,7 +7,7 @@ const Uuid = require("uuid");
 router.get("/posts", auth, async (req, res) => {
     try {
 
-        const posts = await Post.find();
+        const posts = await Post.find().populate("comments.postedBy", "_id name");
         res.json({posts});
         
     } catch (error) {
@@ -43,7 +43,7 @@ router.post("/create", auth, async(req, res) => {
 
 router.get("/userposts", auth, async (req, res) => {
     try {
-        const posts = await Post.find({postedBy: req.user.id});
+        const posts = await Post.find({postedBy: req.user._id});
         res.json({posts});
         
     } catch (error) {
@@ -55,8 +55,8 @@ router.put("/like", auth, async (req, res) => {
     try {
         const options = { new: true };
         const updatedPost = await Post.findByIdAndUpdate(req.body.postId, {
-            $push: {likes: req.user.id}
-        }, options);
+            $push: {likes: req.user._id}
+        }, options).populate("comments.postedBy", "_id name");
         res.json(updatedPost);
         
     } catch (error) {
@@ -68,8 +68,8 @@ router.put("/unlike", auth, async (req, res) => {
     try {
         const options = { new: true };
         const updatedPost = await Post.findByIdAndUpdate(req.body.postId, {
-            $pull: {likes: req.user.id}
-        }, options);
+            $pull: {likes: req.user._id}
+        }, options).populate("comments.postedBy", "_id name");
         res.json(updatedPost);
         
     } catch (error) {
@@ -82,12 +82,11 @@ router.put("/addComment", auth, async (req, res) => {
         const options = { new: true };
         const comment = {
             text: req.body.text,
-            postedBy: req.user,
+            postedBy: req.user._id,
         }
         const updatedPost = await Post.findByIdAndUpdate(req.body.postId, {
             $push: {comments: comment}
         }, options).populate("comments.postedBy", "_id name");
-
         res.json(updatedPost);
         
     } catch (error) {
@@ -102,8 +101,8 @@ router.put("/removeComment", auth, async (req, res) => {
             postedBy: req.user,
         }
         const updatedPost = await Post.findByIdAndUpdate(req.body.postId, {
-            $push: {comments: comment}
-        }, options).populate("comments.postedBy", "_id name");
+            $pull: {comments: comment}
+        }, options);
 
         res.json(updatedPost);
         
