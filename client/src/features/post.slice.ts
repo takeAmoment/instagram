@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createPostApi, getAllPostsApi, getUserPostsApi } from 'api';
+import { createPostApi, getAllPostsApi, getUserPostsApi, likePostApi, unlikePostApi } from 'api';
 import { isAxiosError } from 'axios';
-import { PostInitialState } from 'types/types';
+import { PostId, PostInitialState } from 'types/types';
 
 const initialState: PostInitialState = {
   usersPosts: [],
@@ -34,6 +34,27 @@ export const getAllPosts = createAsyncThunk('allposts/get', async () => {
 export const getUserPosts = createAsyncThunk('userPosts/get', async () => {
   try {
     const response = await getUserPostsApi();
+    return response.data;
+  } catch (error) {
+    if (isAxiosError(error)) {
+      console.log(error);
+    }
+  }
+});
+
+export const likePost = createAsyncThunk('post/like', async (postId: PostId) => {
+  try {
+    const response = await likePostApi(postId);
+    return response.data;
+  } catch (error) {
+    if (isAxiosError(error)) {
+      console.log(error);
+    }
+  }
+});
+export const unlikePost = createAsyncThunk('post/unlike', async (postId: PostId) => {
+  try {
+    const response = await unlikePostApi(postId);
     return response.data;
   } catch (error) {
     if (isAxiosError(error)) {
@@ -80,6 +101,26 @@ export const postSlice = createSlice({
       .addCase(getUserPosts.rejected, (state) => {
         state.status = 'failed';
         state.usersPosts = [];
+      })
+      .addCase(likePost.fulfilled, (state, action) => {
+        const newPosts = state.allPosts.map((post) => {
+          if (post._id === action.payload._id) {
+            return action.payload;
+          } else {
+            return post;
+          }
+        });
+        state.allPosts = newPosts;
+      })
+      .addCase(unlikePost.fulfilled, (state, action) => {
+        const newPosts = state.allPosts.map((post) => {
+          if (post._id === action.payload._id) {
+            return action.payload;
+          } else {
+            return post;
+          }
+        });
+        state.allPosts = newPosts;
       });
   },
 });
