@@ -1,7 +1,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createPostApi, getAllPostsApi, getUserPostsApi, likePostApi, unlikePostApi } from 'api';
+import {
+  addCommentApi,
+  createPostApi,
+  getAllPostsApi,
+  getUserPostsApi,
+  likePostApi,
+  unlikePostApi,
+} from 'api';
 import { isAxiosError } from 'axios';
-import { PostId, PostInitialState } from 'types/types';
+import { CommentInfo, PostId, PostInitialState } from 'types/types';
 
 const initialState: PostInitialState = {
   usersPosts: [],
@@ -55,6 +62,17 @@ export const likePost = createAsyncThunk('post/like', async (postId: PostId) => 
 export const unlikePost = createAsyncThunk('post/unlike', async (postId: PostId) => {
   try {
     const response = await unlikePostApi(postId);
+    return response.data;
+  } catch (error) {
+    if (isAxiosError(error)) {
+      console.log(error);
+    }
+  }
+});
+
+export const addComment = createAsyncThunk('post/addComment', async (request: CommentInfo) => {
+  try {
+    const response = await addCommentApi(request);
     return response.data;
   } catch (error) {
     if (isAxiosError(error)) {
@@ -121,6 +139,18 @@ export const postSlice = createSlice({
           }
         });
         state.allPosts = newPosts;
+      })
+      .addCase(addComment.fulfilled, (state, action) => {
+        if (action.payload) {
+          const newPost = state.allPosts.map((post) => {
+            if (post._id === action.payload._id) {
+              return action.payload;
+            } else {
+              return post;
+            }
+          });
+          state.allPosts = newPost;
+        }
       });
   },
 });

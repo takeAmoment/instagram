@@ -31,6 +31,14 @@ export interface UsersPost {
   body: string;
   photo: string;
   likes: string[];
+  comments: {
+    text: string;
+    postedBy: {
+      _id: string;
+      name: string;
+    };
+    _id: string;
+  }[];
 }
 
 export interface PostInitialState {
@@ -45,4 +53,8 @@ export interface PostProps {
 
 export interface PostId {
   postId: string;
+}
+
+export interface CommentInfo extends PostId {
+  text: string;
 }
