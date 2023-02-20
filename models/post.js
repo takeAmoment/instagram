@@ -14,6 +14,10 @@ const postSchema = new Schema({
         default: "no photo",
     },
     likes: [{ type: Types.ObjectId, ref: "User"}],
+    comments: [{
+        text: String,
+        postedBy: { type: Types.ObjectId, ref: "User"},
+    }],
     postedBy: {
         type: Types.ObjectId,
         ref: "User",
