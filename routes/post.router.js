@@ -27,7 +27,6 @@ router.post("/create", auth, async(req, res) => {
         const fileName = Uuid.v4() + file.name;
         file.mv(`/Users/sasha/Desktop/code/express/insta/instagram/client/public/uploads/${fileName}`, err => {
             if (err) {
-                console.log(err);
                 res.status(500).send(err);
             }
         });
@@ -105,6 +104,21 @@ router.put("/removeComment", auth, async (req, res) => {
        res.status(500).json({message: "Server error"}); 
     }
 });
+
+router.delete("/delete/:postId", auth, async (req, res) => {
+
+    try {
+        const post = await Post.findOne({_id: req.params.postId}).populate("postedBy", "_id");
+        if (req.user._id.toString() !== post.postedBy._id.toString()) {
+            return res.status(422).json({message: "Not your post"});
+        }
+        post.remove();
+        res.json(post);
+        
+    } catch (error) {
+       res.status(500).json({message: "Server error"}); 
+    }
+})
 
 
 module.exports = router;
