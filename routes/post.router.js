@@ -51,5 +51,31 @@ router.get("/userposts", auth, async (req, res) => {
     }
 });
 
+router.put("/like", auth, async (req, res) => {
+    try {
+        const options = { new: true };
+        const updatedPost = await Post.findByIdAndUpdate(req.body.postId, {
+            $push: {likes: req.user.id}
+        }, options);
+        res.json(updatedPost);
+        
+    } catch (error) {
+       res.status(500).json({message: "Server error"}); 
+    }
+});
+
+router.put("/unlike", auth, async (req, res) => {
+    try {
+        const options = { new: true };
+        const updatedPost = await Post.findByIdAndUpdate(req.body.postId, {
+            $pull: {likes: req.user.id}
+        }, options);
+        res.json(updatedPost);
+        
+    } catch (error) {
+       res.status(500).json({message: "Server error"}); 
+    }
+});
+
 
 module.exports = router;
