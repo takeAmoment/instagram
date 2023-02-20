@@ -1,10 +1,10 @@
-import { HeartOutlined } from '@ant-design/icons';
+import { DeleteOutlined, HeartOutlined } from '@ant-design/icons';
 import Icon, { CustomIconComponentProps } from '@ant-design/icons/lib/components/Icon';
 import { Card, Form, Input, Space, Typography } from 'antd';
-import { addComment, likePost, unlikePost } from 'features/post.slice';
+import { addComment, likePost, removeComment, unlikePost } from 'features/post.slice';
 import { useAppDispath } from 'hooks/hooks';
 import React, { FC } from 'react';
-import { CommentInfo, PostProps } from 'types/types';
+import { CommentInfo, PostProps, Comment, RemoveCommentRequest } from 'types/types';
 const { Title, Paragraph, Text } = Typography;
 const HeartSvg = () => (
   <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 1024 1024">
@@ -38,6 +38,10 @@ const Post: FC<PostProps> = ({ post }) => {
     form.resetFields();
   };
 
+  const handleDeleteComment = (comment: Comment) => {
+    dispatch(removeComment({ _id: comment._id, postId: post._id }));
+  };
+
   const HeartIcon = (props: Partial<CustomIconComponentProps>) => (
     <Icon component={HeartSvg} {...props} onClick={handleUnlike} />
   );
@@ -62,6 +66,7 @@ const Post: FC<PostProps> = ({ post }) => {
             <div key={comment._id} style={{ display: 'flex', gap: '5px' }}>
               <Text strong>{comment.postedBy.name && comment.postedBy.name}</Text>
               <Paragraph>{comment.text}</Paragraph>
+              <DeleteOutlined onClick={() => handleDeleteComment(comment)} />
             </div>
           );
         })}

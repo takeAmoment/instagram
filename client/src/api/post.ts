@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CommentInfo, PostId } from 'types/types';
+import { CommentInfo, PostId, Comment, RemoveCommentRequest } from 'types/types';
 
 export const createPostApi = async (request: FormData) =>
   await axios({
@@ -20,5 +20,5 @@ export const unlikePostApi = async (postId: PostId) => await axios.put('/unlike'
 export const addCommentApi = async (request: CommentInfo) =>
   await axios.put('/addComment', request);
 
-export const removeCommentApi = async (request: CommentInfo) =>
+export const removeCommentApi = async (request: RemoveCommentRequest) =>
   await axios.put('/removeComment', request);

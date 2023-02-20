@@ -5,10 +5,11 @@ import {
   getAllPostsApi,
   getUserPostsApi,
   likePostApi,
+  removeCommentApi,
   unlikePostApi,
 } from 'api';
 import { isAxiosError } from 'axios';
-import { CommentInfo, PostId, PostInitialState } from 'types/types';
+import { CommentInfo, PostId, PostInitialState, Comment, RemoveCommentRequest } from 'types/types';
 
 const initialState: PostInitialState = {
   usersPosts: [],
@@ -81,6 +82,20 @@ export const addComment = createAsyncThunk('post/addComment', async (request: Co
   }
 });
 
+export const removeComment = createAsyncThunk(
+  'post/removeComment',
+  async (request: RemoveCommentRequest) => {
+    try {
+      const response = await removeCommentApi(request);
+      return response.data;
+    } catch (error) {
+      if (isAxiosError(error)) {
+        console.log(error);
+      }
+    }
+  }
+);
+
 export const postSlice = createSlice({
   name: 'post',
   initialState,
@@ -141,6 +156,18 @@ export const postSlice = createSlice({
         state.allPosts = newPosts;
       })
       .addCase(addComment.fulfilled, (state, action) => {
+        if (action.payload) {
+          const newPost = state.allPosts.map((post) => {
+            if (post._id === action.payload._id) {
+              return action.payload;
+            } else {
+              return post;
+            }
+          });
+          state.allPosts = newPost;
+        }
+      })
+      .addCase(removeComment.fulfilled, (state, action) => {
         if (action.payload) {
           const newPost = state.allPosts.map((post) => {
             if (post._id === action.payload._id) {
