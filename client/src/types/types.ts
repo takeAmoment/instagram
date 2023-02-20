@@ -38,6 +38,7 @@ export interface UsersPost {
   _id: string;
   title: string;
   body: string;
+  postedBy: string;
   photo: string;
   likes: string[];
   comments: Comment[];

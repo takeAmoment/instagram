@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   addCommentApi,
   createPostApi,
+  deletePostApi,
   getAllPostsApi,
   getUserPostsApi,
   likePostApi,
@@ -9,7 +10,7 @@ import {
   unlikePostApi,
 } from 'api';
 import { isAxiosError } from 'axios';
-import { CommentInfo, PostId, PostInitialState, Comment, RemoveCommentRequest } from 'types/types';
+import { CommentInfo, PostId, PostInitialState, RemoveCommentRequest } from 'types/types';
 
 const initialState: PostInitialState = {
   usersPosts: [],
@@ -96,6 +97,17 @@ export const removeComment = createAsyncThunk(
   }
 );
 
+export const deletePost = createAsyncThunk('post/delete', async (postId: string) => {
+  try {
+    const response = await deletePostApi(postId);
+    return response.data;
+  } catch (error) {
+    if (isAxiosError(error)) {
+      console.log(error);
+    }
+  }
+});
+
 export const postSlice = createSlice({
   name: 'post',
   initialState,
@@ -177,6 +189,12 @@ export const postSlice = createSlice({
             }
           });
           state.allPosts = newPost;
+        }
+      })
+      .addCase(deletePost.fulfilled, (state, action) => {
+        if (action.payload) {
+          const newList = state.allPosts.filter((post) => post._id !== action.payload._id);
+          state.allPosts = newList;
         }
       });
   },

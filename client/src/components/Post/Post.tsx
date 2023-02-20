@@ -1,10 +1,10 @@
 import { DeleteOutlined, HeartOutlined } from '@ant-design/icons';
 import Icon, { CustomIconComponentProps } from '@ant-design/icons/lib/components/Icon';
-import { Card, Form, Input, Space, Typography } from 'antd';
-import { addComment, likePost, removeComment, unlikePost } from 'features/post.slice';
+import { Card, Form, Input, Space, Typography, Image, Button } from 'antd';
+import { addComment, deletePost, likePost, removeComment, unlikePost } from 'features/post.slice';
 import { useAppDispath } from 'hooks/hooks';
 import React, { FC } from 'react';
-import { CommentInfo, PostProps, Comment, RemoveCommentRequest } from 'types/types';
+import { CommentInfo, PostProps, Comment } from 'types/types';
 const { Title, Paragraph, Text } = Typography;
 const HeartSvg = () => (
   <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 1024 1024">
@@ -16,6 +16,7 @@ const Post: FC<PostProps> = ({ post }) => {
   const id = localStorage.getItem('userId');
   const dispatch = useAppDispath();
   const [form] = Form.useForm();
+  const myPost = post.postedBy === id;
   const handleClick = async () => {
     const id = localStorage.getItem('userId');
     if (id && !post.likes.includes(id)) {
@@ -42,12 +43,27 @@ const Post: FC<PostProps> = ({ post }) => {
     dispatch(removeComment({ _id: comment._id, postId: post._id }));
   };
 
+  const handleDeletePost = () => {
+    dispatch(deletePost(post._id));
+  };
+
   const HeartIcon = (props: Partial<CustomIconComponentProps>) => (
     <Icon component={HeartSvg} {...props} onClick={handleUnlike} />
   );
 
   return (
-    <Card style={{ width: 600 }} cover={<img alt="example" src={`./uploads/${post.photo}`} />}>
+    <Card
+      style={{ width: 600 }}
+      cover={
+        <>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <p>hgsdlfhsd</p>
+            {myPost && <Button onClick={handleDeletePost}>delete</Button>}
+          </div>
+          <img alt="example" src={`./uploads/${post.photo}`} />
+        </>
+      }
+    >
       <Space size={10} align="center">
         {!post.likes.includes(id!) ? (
           <HeartOutlined style={{ fontSize: '28px' }} onClick={handleClick} />
