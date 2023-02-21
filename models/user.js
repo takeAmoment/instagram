@@ -13,6 +13,10 @@ const userSchema = new Schema({
         type: String,
         require: true,
     },
+    avatar: {
+        type: String,
+        default: "",
+    },
     followers: [{type: Types.ObjectId, ref: "User"}],
     following: [{type: Types.ObjectId, ref: "User"}],
 });
