@@ -17,7 +17,7 @@ router.get("/posts", auth, async (req, res) => {
     }
 });
 
-router.get("/getsubpost", auth, async(req, res) => {
+router.get("/getsubposts", auth, async(req, res) => {
     try {
         const posts = await Post.find({ postedBy: { $in: req.user.following }})
         .populate("postedBy", "_id name")

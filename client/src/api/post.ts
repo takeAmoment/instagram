@@ -24,3 +24,5 @@ export const removeCommentApi = async (request: RemoveCommentRequest) =>
   await axios.put('/removeComment', request);
 
 export const deletePostApi = async (postId: string) => await axios.delete(`/delete/${postId}`);
+
+export const getFollowingPostsApi = async () => await axios.get('/getsubposts');

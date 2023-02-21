@@ -25,6 +25,7 @@ const HeaderOfApp = () => {
   const itemsRegisterUser = [
     { label: <Link to="/profile">Profile</Link>, key: 'profile' },
     { label: <Link to="/createpost">Create post</Link>, key: 'createpost' },
+    { label: <Link to="/followingposts">Posts</Link>, key: 'followingposts' },
     {
       label: (
         <Button type="link" style={{ color: 'black' }} onClick={handleLogout}>
