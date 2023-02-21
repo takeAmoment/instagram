@@ -69,3 +69,7 @@ export interface RemoveCommentRequest {
   _id: string;
   postId: string;
 }
+
+export interface ProfileProps {
+  posts: UsersPost[] | [];
+}

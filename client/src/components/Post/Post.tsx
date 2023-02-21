@@ -4,6 +4,7 @@ import { Card, Form, Input, Space, Typography, Button } from 'antd';
 import { addComment, deletePost, likePost, removeComment, unlikePost } from 'features/post.slice';
 import { useAppDispath } from 'hooks/hooks';
 import React, { FC } from 'react';
+import { Link } from 'react-router-dom';
 import { CommentInfo, PostProps, Comment } from 'types/types';
 const { Title, Paragraph, Text } = Typography;
 const HeartSvg = () => (
@@ -57,7 +58,9 @@ const Post: FC<PostProps> = ({ post }) => {
       cover={
         <>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <Title level={5}>{post.postedBy.name}</Title>
+            <Link to={myPost ? '/profile' : `/profile/${post.postedBy._id}`}>
+              <Title level={5}>{post.postedBy.name}</Title>
+            </Link>
             {myPost && <Button onClick={handleDeletePost}>delete</Button>}
           </div>
           <img alt="example" src={`./uploads/${post.photo}`} />
