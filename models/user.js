@@ -1,4 +1,4 @@
-const {Schema, model} = require("mongoose");
+const {Schema, model, Types} = require("mongoose");
 
 const userSchema = new Schema({
     name: {
@@ -12,6 +12,8 @@ const userSchema = new Schema({
     password: {
         type: String,
         require: true,
-    }
+    },
+    followers: [{type: Types.ObjectId, ref: "User"}],
+    following: [{type: Types.ObjectId, ref: "User"}],
 });
 module.exports = model("User", userSchema);
