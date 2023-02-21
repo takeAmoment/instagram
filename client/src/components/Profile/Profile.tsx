@@ -1,12 +1,15 @@
-import { Row, Col, Divider, Typography } from 'antd';
+import { Row, Col, Divider, Typography, Button } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import { Image } from 'antd';
 import React, { FC } from 'react';
 import styles from './Profile.module.scss';
 import { ProfileProps } from 'types/types';
+import { useLocation } from 'react-router-dom';
 const { Title, Paragraph, Text } = Typography;
 
-const Profile: FC<ProfileProps> = ({ posts }) => {
+const Profile: FC<ProfileProps> = ({ posts, user, follow, unfollow }) => {
+  const location = useLocation();
+  const userId = localStorage.getItem('userId');
   return (
     <Content>
       <div className={styles.container}>
@@ -32,18 +35,18 @@ const Profile: FC<ProfileProps> = ({ posts }) => {
             <Col xs={{ span: 24 }} sm={{ span: 16 }} md={{ span: 12 }} lg={{ span: 8 }}>
               <Row justify="center">
                 <Col>
-                  <Title level={3}>First Name Second Name</Title>
+                  <Title level={3}>{user?.name}</Title>
                 </Col>
               </Row>
               <Row justify="center">
                 <Col span={6}>
-                  <Text strong>33 posts</Text>
+                  <Text strong>{posts.length} posts</Text>
                 </Col>
                 <Col span={6}>
-                  <Text strong>23 followers</Text>
+                  <Text strong>{user?.followers.length} followers</Text>
                 </Col>
                 <Col span={6}>
-                  <Text strong>78 following</Text>
+                  <Text strong>{user?.following.length} following</Text>
                 </Col>
               </Row>
               <Row justify="center">
@@ -51,6 +54,17 @@ const Profile: FC<ProfileProps> = ({ posts }) => {
                   <Paragraph>lorem lorem lorem</Paragraph>
                 </Col>
               </Row>
+              {location.pathname !== '/profile' && (
+                <Row justify="center">
+                  <Col>
+                    {userId && user?.followers.includes(userId) ? (
+                      <Button onClick={unfollow}>Unfollow</Button>
+                    ) : (
+                      <Button onClick={follow}>Follow</Button>
+                    )}
+                  </Col>
+                </Row>
+              )}
             </Col>
           </Row>
         </section>

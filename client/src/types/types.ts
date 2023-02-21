@@ -72,4 +72,23 @@ export interface RemoveCommentRequest {
 
 export interface ProfileProps {
   posts: UsersPost[] | [];
+  user: IUser | undefined;
+  follow?: () => void;
+  unfollow?: () => void;
+}
+
+export interface IUser {
+  _id: string;
+  name: string;
+  email: string;
+  followers: string[];
+  following: string[];
+}
+
+export interface FollowId {
+  followId: string;
+}
+
+export interface UnfollowId {
+  unfollowId: string;
 }
