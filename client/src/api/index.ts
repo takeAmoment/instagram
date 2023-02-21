@@ -1,5 +1,6 @@
 import axios, { InternalAxiosRequestConfig } from 'axios';
 export * from './post';
+export * from './user';
 
 axios.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
