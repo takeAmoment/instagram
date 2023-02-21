@@ -14,6 +14,7 @@ app.use(fileUpload({
 }));
 app.use(require("./routes/auth.router"));
 app.use(require("./routes/post.router"));
+app.use(require("./routes/user.router"));
 
 async function start() {
     try {
