@@ -1,0 +1,24 @@
+.card {
+    width: 600px;
+}
+@media (max-width: 700px) {
+    .card {
+        width: 95%;
+    }
+}
+.cover__name {
+    margin: 0;
+    margin-bottom: 0 !important;
+}
+.comment {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1rem;
+}
+.comment__text {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}

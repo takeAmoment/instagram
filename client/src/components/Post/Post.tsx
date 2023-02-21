@@ -6,6 +6,7 @@ import { useAppDispath } from 'hooks/hooks';
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { CommentInfo, PostProps, Comment } from 'types/types';
+import styles from './Post.module.scss';
 const { Title, Paragraph, Text } = Typography;
 const HeartSvg = () => (
   <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 1024 1024">
@@ -54,12 +55,22 @@ const Post: FC<PostProps> = ({ post }) => {
 
   return (
     <Card
-      style={{ width: 600 }}
+      className={styles.card}
       cover={
         <>
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '1rem',
+            }}
+          >
             <Link to={myPost ? '/profile' : `/profile/${post.postedBy._id}`}>
-              <Title level={5}>{post.postedBy.name}</Title>
+              <Title className={styles.cover__name} level={5}>
+                {post.postedBy.name}
+              </Title>
             </Link>
             {myPost && <Button onClick={handleDeletePost}>delete</Button>}
           </div>
@@ -79,16 +90,22 @@ const Post: FC<PostProps> = ({ post }) => {
       </Space>
       <Title level={5}>{post.title}</Title>
       <Paragraph>{post.body}</Paragraph>
-      {post.comments.length > 0 &&
-        post.comments.map((comment) => {
-          return (
-            <div key={comment._id} style={{ display: 'flex', gap: '5px' }}>
-              <Text strong>{comment.postedBy.name && comment.postedBy.name}</Text>
-              <Paragraph>{comment.text}</Paragraph>
-              <DeleteOutlined onClick={() => handleDeleteComment(comment)} />
-            </div>
-          );
-        })}
+      <div style={{ maxHeight: '7rem', overflowY: 'auto', marginBottom: '1rem' }}>
+        {post.comments.length > 0 &&
+          post.comments.map((comment) => {
+            return (
+              <div key={comment._id} className={styles.comment}>
+                <div className={styles.comment__text}>
+                  <Text strong>{comment.postedBy.name && comment.postedBy.name}</Text>
+                  <Paragraph>{comment.text}</Paragraph>
+                </div>
+                {comment.postedBy._id === id && (
+                  <DeleteOutlined onClick={() => handleDeleteComment(comment)} />
+                )}
+              </div>
+            );
+          })}
+      </div>
       <Form name="commentForm" onFinish={onFinish} autoComplete="off" form={form}>
         <Form.Item name="text">
           <Input
