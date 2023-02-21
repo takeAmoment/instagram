@@ -71,7 +71,7 @@ router.put("/unfollow", auth, async (req, res) => {
             return res.status(422).json({message: "Error"});
         }
 
-        res.json(user);
+        res.json(followerUser);
     } catch (error) {
         res.status(500).json({message: "Server error"});
     }
