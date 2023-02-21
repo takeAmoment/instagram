@@ -15,7 +15,20 @@ router.get("/posts", auth, async (req, res) => {
     } catch (error) {
         res.status(500).json({message: "Server error"});
     }
-})
+});
+
+router.get("/getsubpost", auth, async(req, res) => {
+    try {
+        const posts = await Post.find({ postedBy: { $in: req.user.following }})
+        .populate("postedBy", "_id name")
+        .populate("comments.postedBy", "_id name");
+
+        res.json(posts);
+        
+    } catch (error) {
+        res.status(500).json({message: "Server error"});
+    }
+});
 
 router.post("/create", auth, async(req, res) => {
     try {
