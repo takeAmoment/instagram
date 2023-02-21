@@ -6,16 +6,6 @@ const { JWT_SECRET } = require("../keys");
 const router = express.Router();
 const auth = require("../middleware/auth.middleware");
 
-
-router.get("/user", auth, async (req, res) => {
-    try {
-        const user = await User.findById({_id: req.user.id})
-        res.json(user);
-    } catch (error) {
-        res.status(500).json({message: "Server error"})
-    }
-});
-
 router.post("/signup",  async (req, res) => {
     try {
         const { name, email, password } = req.body;
