@@ -9,6 +9,7 @@ import CreatePostPage from 'pages/CreatePostPage/CreatePostPage';
 import ProtectedRoute from 'components/ProtectedRoute/ProtectedRoute';
 import UserProfilePage from 'pages/UserProfilePage/UserProfilePage';
 import FollowingPostsPage from 'pages/FollowingPostsPage/FollowingPostPage';
+import './App.scss';
 
 function App() {
   return (

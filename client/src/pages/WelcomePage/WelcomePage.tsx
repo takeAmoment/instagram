@@ -1,5 +1,5 @@
 import { Content } from 'antd/es/layout/layout';
-import { Button, Typography } from 'antd';
+import { Button, Col, Row, Typography, Image } from 'antd';
 
 const { Title, Paragraph } = Typography;
 import React from 'react';
@@ -8,32 +8,47 @@ import { Link } from 'react-router-dom';
 
 const WelcomePage = () => {
   return (
-    <div className={styles.wrapper}>
-      <Content className={styles.welcome}>
-        <div className={styles.welcome__contant}>
-          <Title className={styles.contant__title}>Nice to meet you</Title>
-          <Paragraph>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Tempore eius repudiandae minus
-            maiores, delectus accusantium inventore error praesentium enim. In adipisci asperiores
-            libero quam nihil voluptatem maiores ratione corrupti commodi! Repudiandae rem harum
-            odit voluptate porro asperiores nisi consequatur laboriosam aliquam eligendi, voluptas
-            numquam aperiam reiciendis natus dolor delectus nam nobis deserunt consequuntur, id,
-          </Paragraph>
-          <div className={styles.contant__buttons}>
-            <Link to="/login">
-              <Button type="primary" ghost size="large">
-                Login
-              </Button>
-            </Link>
-            <Link to="/register">
-              <Button type="primary" size="large">
-                Sign up
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </Content>
-    </div>
+    <Content className={styles.welcome}>
+      <div className={styles.welcome__contant}>
+        <Row justify="center" gutter={24}>
+          <Col
+            xs={{ span: 24 }}
+            sm={{ span: 24 }}
+            md={{ span: 20 }}
+            lg={{ span: 12 }}
+            className={styles.contant__image}
+          >
+            <Image src="/assets/main-photo.jpg" preview={false} />
+          </Col>
+          <Col
+            xs={{ span: 24 }}
+            sm={{ span: 24 }}
+            md={{ span: 20 }}
+            lg={{ span: 12 }}
+            className={styles.contant__info}
+          >
+            <Title className={styles.contant__title}>Welcome to Instagram</Title>
+            <Paragraph className={styles.contant__text}>
+              Hello a new friend. We are really glad to see you. With us you can keep in touch with
+              your friend, share your photos, be inspired by new ideas, see how beautiful the word
+              is, explore new places and learning. Sign up and enjoy our app.
+            </Paragraph>
+            <div className={styles.contant__buttons}>
+              <Link to="/login">
+                <Button type="primary" ghost size="large">
+                  Login
+                </Button>
+              </Link>
+              <Link to="/register">
+                <Button type="primary" size="large">
+                  Sign up
+                </Button>
+              </Link>
+            </div>
+          </Col>
+        </Row>
+      </div>
+    </Content>
   );
 };
 
