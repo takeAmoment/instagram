@@ -75,14 +75,17 @@ export interface ProfileProps {
   user: IUser | undefined;
   follow?: () => void;
   unfollow?: () => void;
+  refreshUser?: (user: IUser) => void;
 }
 
 export interface IUser {
   _id: string;
   name: string;
   email: string;
+  info: string;
   followers: string[];
   following: string[];
+  avatar: string;
 }
 
 export interface FollowId {
@@ -91,4 +94,11 @@ export interface FollowId {
 
 export interface UnfollowId {
   unfollowId: string;
+}
+
+export interface EditForm {
+  name: string;
+  email: string;
+  info: string;
+  files: UploadFile[];
 }

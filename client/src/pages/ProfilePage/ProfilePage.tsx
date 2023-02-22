@@ -12,6 +12,9 @@ const ProfilePage = () => {
   const [user, setUser] = useState<IUser>();
   const dispatch = useAppDispath();
 
+  const refreshUser = (user: IUser) => {
+    setUser(user);
+  };
   const getUser = async () => {
     try {
       const response = await getUserApi();
@@ -26,7 +29,7 @@ const ProfilePage = () => {
     dispatch(getUserPosts());
   }, [dispatch]);
 
-  return <Profile posts={posts} user={user} />;
+  return <Profile posts={posts} user={user} refreshUser={refreshUser} />;
 };
 
 export default ProfilePage;
