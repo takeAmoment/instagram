@@ -13,6 +13,10 @@ const userSchema = new Schema({
         type: String,
         require: true,
     },
+    info: {
+        type: String,
+        default: '',
+    },
     avatar: {
         type: String,
         default: "",
