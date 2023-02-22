@@ -3,6 +3,7 @@ const router = Router();
 const auth = require("../middleware/auth.middleware");
 const User = require("../models/user");
 const Post = require("../models/post");
+const Uuid = require("uuid");
 
 router.get("/user/:id", auth, async (req, res) => {
     try {
@@ -22,10 +23,45 @@ router.get("/user/:id", auth, async (req, res) => {
 });
 router.get("/user", auth, async (req, res) => {
     try {
-        const user = await User.findById({_id: req.user.id})
-        res.json(user);
+        const user = await User.findById(req.user._id)
+        res.json(user)
     } catch (error) {
         res.status(500).json({message: "Server error"})
+    }
+});
+
+router.patch("/userupdate", auth, async (req,res) => {
+    try {
+        const { name, email, info} = req.body;
+        const file = req.files.file;
+        const user = await User.findOne({_id: req.user._id});
+
+        if (name) {
+            user.name = name;
+        }
+        if (email) {
+            user.email = email;
+        }
+        if (info) {
+            user.info = info;
+        }
+
+        if (file) {
+            const fileName = Uuid.v4() + file.name;
+            file.mv(`/Users/sasha/Desktop/code/express/insta/instagram/client/public/uploads/${fileName}`, err => {
+                if (err) {
+                    res.status(500).send(err);
+                }
+            });
+            user.avatar = fileName;
+        }
+        await user.save();
+        console.log(user);
+        res.json(user);
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Serever error"});
     }
 });
 
