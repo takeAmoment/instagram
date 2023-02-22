@@ -8,6 +8,7 @@ router.get("/posts", auth, async (req, res) => {
     try {
 
         const posts = await Post.find()
+        .sort({_id:-1})
         .populate("comments.postedBy", "_id name")
         .populate("postedBy", "_id name");
         res.json({posts});
@@ -20,6 +21,7 @@ router.get("/posts", auth, async (req, res) => {
 router.get("/getsubposts", auth, async(req, res) => {
     try {
         const posts = await Post.find({ postedBy: { $in: req.user.following }})
+        .sort({_id:-1})
         .populate("postedBy", "_id name")
         .populate("comments.postedBy", "_id name");
 
@@ -57,7 +59,7 @@ router.post("/create", auth, async(req, res) => {
 
 router.get("/userposts", auth, async (req, res) => {
     try {
-        const posts = await Post.find({postedBy: req.user._id});
+        const posts = await Post.find({postedBy: req.user._id}).sort({_id:-1});
         res.json({posts});
         
     } catch (error) {
