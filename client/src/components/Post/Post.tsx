@@ -1,24 +1,50 @@
-import { DeleteOutlined, HeartOutlined } from '@ant-design/icons';
+import { EllipsisOutlined, HeartOutlined } from '@ant-design/icons';
 import Icon, { CustomIconComponentProps } from '@ant-design/icons/lib/components/Icon';
-import { Card, Form, Input, Space, Typography, Button } from 'antd';
+import {
+  Card,
+  Form,
+  Input,
+  Space,
+  Typography,
+  Button,
+  Image,
+  Dropdown,
+  MenuProps,
+  Row,
+  Col,
+  Modal,
+  List,
+} from 'antd';
+import Comment from 'components/Comment/Comment';
 import { addComment, deletePost, likePost, removeComment, unlikePost } from 'features/post.slice';
 import { useAppDispath } from 'hooks/hooks';
-import React, { FC } from 'react';
+import { HeartSvg } from 'icons/icons';
+import React, { FC, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CommentInfo, PostProps, Comment } from 'types/types';
+import { CommentInfo, PostProps, IComment } from 'types/types';
 import styles from './Post.module.scss';
 const { Title, Paragraph, Text } = Typography;
-const HeartSvg = () => (
-  <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 1024 1024">
-    <path d="M923 283.6c-13.4-31.1-32.6-58.9-56.9-82.8-24.3-23.8-52.5-42.4-84-55.5-32.5-13.5-66.9-20.3-102.4-20.3-49.3 0-97.4 13.5-139.2 39-10 6.1-19.5 12.8-28.5 20.1-9-7.3-18.5-14-28.5-20.1-41.8-25.5-89.9-39-139.2-39-35.5 0-69.9 6.8-102.4 20.3-31.4 13-59.7 31.7-84 55.5-24.4 23.9-43.5 51.7-56.9 82.8-13.9 32.3-21 66.6-21 101.9 0 33.3 6.8 68 20.3 103.3 11.3 29.5 27.5 60.1 48.2 91 32.8 48.9 77.9 99.9 133.9 151.6 92.8 85.7 184.7 144.9 188.6 147.3l23.7 15.2c10.5 6.7 24 6.7 34.5 0l23.7-15.2c3.9-2.5 95.7-61.6 188.6-147.3 56-51.7 101.1-102.7 133.9-151.6 20.7-30.9 37-61.5 48.2-91 13.5-35.3 20.3-70 20.3-103.3 0.1-35.3-7-69.6-20.9-101.9z" />
-  </svg>
-);
 
 const Post: FC<PostProps> = ({ post }) => {
   const id = localStorage.getItem('userId');
   const dispatch = useAppDispath();
   const [form] = Form.useForm();
   const myPost = post.postedBy._id === id;
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   const handleClick = async () => {
     const id = localStorage.getItem('userId');
     if (id && !post.likes.includes(id)) {
@@ -41,7 +67,7 @@ const Post: FC<PostProps> = ({ post }) => {
     form.resetFields();
   };
 
-  const handleDeleteComment = (comment: Comment) => {
+  const handleDeleteComment = (comment: IComment) => {
     dispatch(removeComment({ _id: comment._id, postId: post._id }));
   };
 
@@ -53,26 +79,49 @@ const Post: FC<PostProps> = ({ post }) => {
     <Icon component={HeartSvg} {...props} onClick={handleUnlike} />
   );
 
+  const items: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <Button onClick={handleDeletePost} type="link">
+          Delete
+        </Button>
+      ),
+    },
+  ];
+  const rows = 2;
+
   return (
     <Card
       className={styles.card}
+      bodyStyle={{ padding: '24px 24px 10px 24px' }}
       cover={
         <>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: '1rem',
-            }}
-          >
+          <div className={styles.card__cover}>
             <Link to={myPost ? '/profile' : `/profile/${post.postedBy._id}`}>
-              <Title className={styles.cover__name} level={5}>
-                {post.postedBy.name}
-              </Title>
+              <Space size={10}>
+                <Image
+                  preview={false}
+                  width={40}
+                  className={styles.cover__avatar}
+                  src={
+                    post.postedBy.avatar
+                      ? `/uploads/${post.postedBy.avatar}`
+                      : `/assets/profile.png`
+                  }
+                />
+                <Title className={styles.cover__name} level={5}>
+                  {post.postedBy.name}
+                </Title>
+              </Space>
             </Link>
-            {myPost && <Button onClick={handleDeletePost}>delete</Button>}
+            {myPost && (
+              <Dropdown menu={{ items }} placement="bottom">
+                <a onClick={(e) => e.preventDefault()}>
+                  <EllipsisOutlined style={{ fontSize: '24px' }} />
+                </a>
+              </Dropdown>
+            )}
           </div>
           <img alt="example" src={`./uploads/${post.photo}`} />
         </>
@@ -84,37 +133,71 @@ const Post: FC<PostProps> = ({ post }) => {
         ) : (
           <HeartIcon style={{ color: 'red', fontSize: '28px' }} />
         )}
-        <Paragraph strong style={{ margin: 0, padding: 0 }}>
-          {post.likes.length}
-        </Paragraph>
+        <Text strong>{post.likes.length}</Text>
       </Space>
-      <Title level={5}>{post.title}</Title>
-      <Paragraph>{post.body}</Paragraph>
-      <div style={{ maxHeight: '7rem', overflowY: 'auto', marginBottom: '1rem' }}>
+      <Title level={5} style={{ marginTop: '10px' }}>
+        {post.title}
+      </Title>
+      <Paragraph
+        ellipsis={{
+          rows,
+          expandable: true,
+          symbol: 'more',
+        }}
+      >
+        {post.body}
+      </Paragraph>
+      <div>
+        <Text type="secondary">Comments {post.comments.length}:</Text>
         {post.comments.length > 0 &&
-          post.comments.map((comment) => {
+          post.comments.slice(0, 1).map((comment) => {
             return (
-              <div key={comment._id} className={styles.comment}>
-                <div className={styles.comment__text}>
-                  <Text strong>{comment.postedBy.name && comment.postedBy.name}</Text>
-                  <Paragraph>{comment.text}</Paragraph>
-                </div>
-                {comment.postedBy._id === id && (
-                  <DeleteOutlined onClick={() => handleDeleteComment(comment)} />
-                )}
-              </div>
+              <Comment
+                comment={comment}
+                handleDeleteComment={handleDeleteComment}
+                key={comment._id}
+              />
             );
           })}
+        {post.comments.length > 1 && (
+          <Row justify="center">
+            <Col>
+              <Button type="link" onClick={showModal}>
+                View all comments
+              </Button>
+            </Col>
+          </Row>
+        )}
       </div>
-      <Form name="commentForm" onFinish={onFinish} autoComplete="off" form={form}>
+      <Form name="commentForm" onFinish={onFinish} autoComplete="off" form={form} key={1}>
         <Form.Item name="text">
           <Input
             bordered={false}
-            placeholder="Your comment"
-            style={{ boxShadow: '0px 2px 1px -1px grey' }}
+            placeholder="Leave your comment here ;)"
+            style={{ boxShadow: '0px 2px 1px -1px grey', borderRadius: '0', marginTop: '10px' }}
           />
         </Form.Item>
       </Form>
+      <Modal
+        title="Comments:"
+        open={isModalOpen}
+        bodyStyle={{ maxHeight: '250px', overflowY: 'scroll' }}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        footer={false}
+      >
+        {post.comments.length > 0 && (
+          <List
+            className={styles.comment__list}
+            dataSource={post.comments}
+            renderItem={(comment: IComment) => (
+              <List.Item className={styles.comment__item}>
+                <Comment comment={comment} handleDeleteComment={handleDeleteComment} />
+              </List.Item>
+            )}
+          />
+        )}
+      </Modal>
     </Card>
   );
 };

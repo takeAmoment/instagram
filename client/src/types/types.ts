@@ -24,11 +24,12 @@ export interface CreatePostInfo {
   body: string;
   files: UploadFile[];
 }
-export interface Comment {
+export interface IComment {
   text: string;
   postedBy: {
     _id: string;
     name: string;
+    avatar: string;
   };
   _id: string;
 }
@@ -40,10 +41,11 @@ export interface UsersPost {
   postedBy: {
     _id: string;
     name: string;
+    avatar: string;
   };
   photo: string;
   likes: string[];
-  comments: Comment[];
+  comments: IComment[];
 }
 
 export interface PostInitialState {
@@ -100,4 +102,9 @@ export interface EditForm {
   email: string;
   info: string;
   files: UploadFile[];
+}
+
+export interface CommentProps {
+  comment: IComment;
+  handleDeleteComment: (comment: IComment) => void;
 }
