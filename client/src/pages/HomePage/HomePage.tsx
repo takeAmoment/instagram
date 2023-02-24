@@ -1,15 +1,18 @@
+import { Empty, List, Spin } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import Post from 'components/Post/Post';
 import { getAllPosts } from 'features/post.slice';
 import { useAppDispath, useAppSelector } from 'hooks/hooks';
 import WelcomePage from 'pages/WelcomePage/WelcomePage';
 import React, { useEffect } from 'react';
+import { UsersPost } from 'types/types';
 import styles from './HomePage.module.scss';
 
 const HomePage = () => {
-  const { allPosts } = useAppSelector((state) => state.post);
+  const { allPosts, status } = useAppSelector((state) => state.post);
   const dispatch = useAppDispath();
   const token = localStorage.getItem('token');
+
   useEffect(() => {
     if (token) {
       dispatch(getAllPosts());
@@ -22,10 +25,19 @@ const HomePage = () => {
   return (
     <Content>
       <div className={styles.container}>
-        {allPosts.length > 0 &&
-          allPosts.map((post) => {
-            return <Post key={post._id} post={post} />;
-          })}
+        {status === 'loading' && <Spin size="large" />}
+        {allPosts.length > 0 && (
+          <List
+            split={false}
+            dataSource={allPosts}
+            renderItem={(item: UsersPost) => (
+              <List.Item>
+                <Post key={item._id} post={item} />
+              </List.Item>
+            )}
+          />
+        )}
+        {allPosts.length === 0 && status !== 'loading' && <Empty description="No posts yet" />}
       </div>
     </Content>
   );
