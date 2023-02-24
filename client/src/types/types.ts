@@ -1,5 +1,4 @@
 import { UploadFile } from 'antd';
-import { AxiosError } from 'axios';
 
 export interface RegisterInfo {
   name?: string;
@@ -13,7 +12,7 @@ export interface UserData {
 export interface AuthInitialState {
   userData: UserData;
   status: 'idle' | 'loading' | 'failed';
-  error: AxiosError | null;
+  isRegistered: boolean;
 }
 
 export type Message = {

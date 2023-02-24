@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { notification } from 'antd';
 import { loginApi, registerApi } from 'api/auth';
 import { isAxiosError } from 'axios';
 import { AuthInitialState, RegisterInfo } from 'types/types';
@@ -9,7 +10,7 @@ const initialState: AuthInitialState = {
     token: '',
   },
   status: 'idle',
-  error: null,
+  isRegistered: false,
 };
 
 export const registerUser = createAsyncThunk('user/register', async (request: RegisterInfo) => {
@@ -18,7 +19,11 @@ export const registerUser = createAsyncThunk('user/register', async (request: Re
     return response.data;
   } catch (error) {
     if (isAxiosError(error)) {
-      console.log(error);
+      notification.error({
+        message: 'Error ' + error.response?.status,
+        description: error.response?.data.message,
+      });
+      throw new Error(error.message);
     }
   }
 });
@@ -29,7 +34,12 @@ export const loginUser = createAsyncThunk('user/login', async (request: Register
     return response.data;
   } catch (error) {
     if (isAxiosError(error)) {
-      console.log(error);
+      console.log(error.response?.data);
+      notification.error({
+        message: 'Error ' + error.response?.status,
+        description: error.response?.data.message,
+      });
+      throw new Error(error.message);
     }
   }
 });
@@ -41,7 +51,7 @@ export const authSlice = createSlice({
     logout: (state) => {
       localStorage.clear();
       state.status = 'idle';
-      state.error = null;
+      state.isRegistered = false;
       state.userData = {
         token: '',
         userId: '',
@@ -52,13 +62,19 @@ export const authSlice = createSlice({
     builder
       .addCase(registerUser.pending, (state) => {
         state.status = 'loading';
+        state.isRegistered = false;
       })
       .addCase(registerUser.fulfilled, (state) => {
         state.status = 'idle';
-        state.error = null;
+        state.isRegistered = true;
+        notification.success({
+          message: 'Hooray!',
+          description: 'User was redistered!',
+        });
       })
       .addCase(registerUser.rejected, (state) => {
         state.status = 'failed';
+        state.isRegistered = false;
       })
       .addCase(loginUser.pending, (state) => {
         state.status = 'loading';
