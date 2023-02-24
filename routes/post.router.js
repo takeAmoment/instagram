@@ -9,8 +9,8 @@ router.get("/posts", auth, async (req, res) => {
 
         const posts = await Post.find()
         .sort({_id:-1})
-        .populate("comments.postedBy", "_id name")
-        .populate("postedBy", "_id name");
+        .populate("comments.postedBy", "_id name avatar")
+        .populate("postedBy", "_id name avatar");
         res.json({posts});
         
     } catch (error) {
@@ -22,8 +22,8 @@ router.get("/getsubposts", auth, async(req, res) => {
     try {
         const posts = await Post.find({ postedBy: { $in: req.user.following }})
         .sort({_id:-1})
-        .populate("postedBy", "_id name")
-        .populate("comments.postedBy", "_id name");
+        .populate("postedBy", "_id name avatar")
+        .populate("comments.postedBy", "_id name avatar");
 
         res.json(posts);
         
@@ -52,7 +52,6 @@ router.post("/create", auth, async(req, res) => {
         await post.save();
         res.status(201).json({message: "post was created"})
     } catch (error) {
-        console.log(error);
         res.status(500).json({message: "Server error"});
     }
 });
@@ -72,7 +71,7 @@ router.put("/like", auth, async (req, res) => {
         const options = { new: true };
         const updatedPost = await Post.findByIdAndUpdate(req.body.postId, {
             $push: {likes: req.user._id}
-        }, options).populate("comments.postedBy", "_id name").populate("postedBy", "_id name");
+        }, options).populate("comments.postedBy", "_id name avatar").populate("postedBy", "_id name avatar");
         res.json(updatedPost);
         
     } catch (error) {
@@ -85,7 +84,7 @@ router.put("/unlike", auth, async (req, res) => {
         const options = { new: true };
         const updatedPost = await Post.findByIdAndUpdate(req.body.postId, {
             $pull: {likes: req.user._id}
-        }, options).populate("comments.postedBy", "_id name").populate("postedBy", "_id name");
+        }, options).populate("comments.postedBy", "_id name avatar avatar").populate("postedBy", "_id name avatar");
         res.json(updatedPost);
         
     } catch (error) {
@@ -114,7 +113,7 @@ router.put("/removeComment", auth, async (req, res) => {
         const options = { new: true };
         const updatedPost = await Post.findByIdAndUpdate(req.body.postId, {
             $pull: { comments: {_id: req.body._id } }
-        }, options).populate("comments.postedBy", "_id name").populate("postedBy", "_id name");
+        }, options).populate("comments.postedBy", "_id name avatar").populate("postedBy", "_id name avatar");
         res.json(updatedPost);
         
     } catch (error) {
