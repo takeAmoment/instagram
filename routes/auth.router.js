@@ -11,13 +11,13 @@ router.post("/signup",  async (req, res) => {
         const { name, email, password } = req.body;
 
         if (!name || !email || !password) {
-            return res.status(422).json({ message: "Uncorrect data"});
+            return res.status(422).send({ error: "Uncorrect data"});
         }
 
         const candidate = await User.findOne({email: email});
 
         if (candidate) {
-            return res.status(400).json({message: "This user already exist"});
+            return res.status(409).json({error: "This user already exist"});
         }
         const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -46,7 +46,7 @@ router.post("/signin", async (req, res) => {
         const user = await User.findOne({email: email});
 
         if (!user) {
-            return res.status(400).json({message: "This user does not exist"});
+            return res.status(409).json({message: "This user does not exist"});
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
