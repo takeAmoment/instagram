@@ -11,6 +11,7 @@ import {
 } from 'api';
 import { isAxiosError } from 'axios';
 import { CommentInfo, PostId, PostInitialState, RemoveCommentRequest } from 'types/types';
+import { notification } from 'antd';
 
 const initialState: PostInitialState = {
   usersPosts: [],
@@ -24,7 +25,11 @@ export const createPost = createAsyncThunk('post/create', async (request: FormDa
     return response.data;
   } catch (error) {
     if (isAxiosError(error)) {
-      console.log(error);
+      notification.error({
+        message: 'Error' + error.response?.status,
+        description: error.response?.data.message,
+      });
+      throw new Error(error.message);
     }
   }
 });
@@ -35,7 +40,11 @@ export const getAllPosts = createAsyncThunk('allposts/get', async () => {
     return response.data;
   } catch (error) {
     if (isAxiosError(error)) {
-      console.log(error);
+      notification.error({
+        message: 'Error' + error.response?.status,
+        description: error.response?.data.message,
+      });
+      throw new Error(error.message);
     }
   }
 });
@@ -46,7 +55,11 @@ export const getUserPosts = createAsyncThunk('userPosts/get', async () => {
     return response.data;
   } catch (error) {
     if (isAxiosError(error)) {
-      console.log(error);
+      notification.error({
+        message: 'Error' + error.response?.status,
+        description: error.response?.data.message,
+      });
+      throw new Error(error.message);
     }
   }
 });
@@ -57,7 +70,11 @@ export const likePost = createAsyncThunk('post/like', async (postId: PostId) => 
     return response.data;
   } catch (error) {
     if (isAxiosError(error)) {
-      console.log(error);
+      notification.error({
+        message: 'Error' + error.response?.status,
+        description: error.response?.data.message,
+      });
+      throw new Error(error.message);
     }
   }
 });
@@ -67,7 +84,11 @@ export const unlikePost = createAsyncThunk('post/unlike', async (postId: PostId)
     return response.data;
   } catch (error) {
     if (isAxiosError(error)) {
-      console.log(error);
+      notification.error({
+        message: 'Error' + error.response?.status,
+        description: error.response?.data.message,
+      });
+      throw new Error(error.message);
     }
   }
 });
@@ -78,7 +99,11 @@ export const addComment = createAsyncThunk('post/addComment', async (request: Co
     return response.data;
   } catch (error) {
     if (isAxiosError(error)) {
-      console.log(error);
+      notification.error({
+        message: 'Error' + error.response?.status,
+        description: error.response?.data.message,
+      });
+      throw new Error(error.message);
     }
   }
 });
@@ -91,7 +116,11 @@ export const removeComment = createAsyncThunk(
       return response.data;
     } catch (error) {
       if (isAxiosError(error)) {
-        console.log(error);
+        notification.error({
+          message: 'Error' + error.response?.status,
+          description: error.response?.data.message,
+        });
+        throw new Error(error.message);
       }
     }
   }
@@ -103,7 +132,11 @@ export const deletePost = createAsyncThunk('post/delete', async (postId: string)
     return response.data;
   } catch (error) {
     if (isAxiosError(error)) {
-      console.log(error);
+      notification.error({
+        message: 'Error' + error.response?.status,
+        description: error.response?.data.message,
+      });
+      throw new Error(error.message);
     }
   }
 });
@@ -119,6 +152,10 @@ export const postSlice = createSlice({
       })
       .addCase(createPost.fulfilled, (state) => {
         state.status = 'idle';
+        notification.success({
+          message: 'Success!',
+          description: 'Your post was created',
+        });
       })
       .addCase(createPost.rejected, (state) => {
         state.status = 'failed';

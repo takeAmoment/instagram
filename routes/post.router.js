@@ -50,7 +50,7 @@ router.post("/create", auth, async(req, res) => {
         const post = new Post({title, body, photo: fileName, postedBy: req.user.id});
 
         await post.save();
-        res.status(201).json({message: "post was created"})
+        res.status(201).json({message: "Post was created"})
     } catch (error) {
         res.status(500).json({message: "Server error"});
     }
