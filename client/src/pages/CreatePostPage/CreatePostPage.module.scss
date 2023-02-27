@@ -8,11 +8,19 @@
 }
 .form {
     margin-top: 3rem;
-    width: 28rem;
+    width: 30rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
     .submit__button {
         width: 20rem;
+    }
+}
+@media (max-width: 400px) {
+    .form {
+        width: 95%;
+        .submit__button {
+            width: 95%;
+        }
     }
 }

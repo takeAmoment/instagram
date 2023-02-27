@@ -17,6 +17,7 @@ const initialState: PostInitialState = {
   usersPosts: [],
   allPosts: [],
   status: 'idle',
+  isCreated: false,
 };
 
 export const createPost = createAsyncThunk('post/create', async (request: FormData) => {
@@ -149,9 +150,11 @@ export const postSlice = createSlice({
     builder
       .addCase(createPost.pending, (state) => {
         state.status = 'loading';
+        state.isCreated = false;
       })
       .addCase(createPost.fulfilled, (state) => {
         state.status = 'idle';
+        state.isCreated = true;
         notification.success({
           message: 'Success!',
           description: 'Your post was created',
@@ -159,6 +162,7 @@ export const postSlice = createSlice({
       })
       .addCase(createPost.rejected, (state) => {
         state.status = 'failed';
+        state.isCreated = false;
       })
       .addCase(getAllPosts.pending, (state) => {
         state.status = 'loading';
@@ -167,6 +171,7 @@ export const postSlice = createSlice({
         state.status = 'idle';
         if (action.payload) {
           state.allPosts = action.payload.posts;
+          state.isCreated = false;
         }
       })
       .addCase(getAllPosts.rejected, (state) => {

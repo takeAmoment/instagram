@@ -52,6 +52,7 @@ export interface PostInitialState {
   usersPosts: UsersPost[];
   allPosts: UsersPost[];
   status: 'idle' | 'loading' | 'failed';
+  isCreated: boolean;
 }
 
 export interface PostProps {
