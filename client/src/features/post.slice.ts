@@ -4,6 +4,7 @@ import {
   createPostApi,
   deletePostApi,
   getAllPostsApi,
+  getFollowingPostsApi,
   getUserPostsApi,
   likePostApi,
   removeCommentApi,
@@ -16,6 +17,7 @@ import { notification } from 'antd';
 const initialState: PostInitialState = {
   usersPosts: [],
   allPosts: [],
+  followingPosts: [],
   status: 'idle',
   isCreated: false,
 };
@@ -142,6 +144,21 @@ export const deletePost = createAsyncThunk('post/delete', async (postId: string)
   }
 });
 
+export const getFollowingPosts = createAsyncThunk('followingPosts/get', async () => {
+  try {
+    const response = await getFollowingPostsApi();
+    return response.data;
+  } catch (error) {
+    if (isAxiosError(error)) {
+      notification.error({
+        message: 'Error' + error.response?.status,
+        description: error.response?.data.message,
+      });
+      throw new Error(error.message);
+    }
+  }
+});
+
 export const postSlice = createSlice({
   name: 'post',
   initialState,
@@ -238,6 +255,17 @@ export const postSlice = createSlice({
           const newList = state.allPosts.filter((post) => post._id !== action.payload._id);
           state.allPosts = newList;
         }
+      })
+      .addCase(getFollowingPosts.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(getFollowingPosts.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.followingPosts = action.payload;
+      })
+      .addCase(getFollowingPosts.rejected, (state) => {
+        state.status = 'failed';
+        state.followingPosts = [];
       });
   },
 });
