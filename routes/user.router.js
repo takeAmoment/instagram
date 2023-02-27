@@ -33,7 +33,7 @@ router.get("/user", auth, async (req, res) => {
 router.patch("/userupdate", auth, async (req,res) => {
     try {
         const { name, email, info} = req.body;
-        const file = req.files.file;
+        const file = req.files?.file ?? '';
         const user = await User.findOne({_id: req.user._id});
 
         if (name) {
@@ -45,7 +45,6 @@ router.patch("/userupdate", auth, async (req,res) => {
         if (info) {
             user.info = info;
         }
-
         if (file) {
             const fileName = Uuid.v4() + file.name;
             file.mv(`/Users/sasha/Desktop/code/express/insta/instagram/client/public/uploads/${fileName}`, err => {
@@ -56,7 +55,6 @@ router.patch("/userupdate", auth, async (req,res) => {
             user.avatar = fileName;
         }
         await user.save();
-        console.log(user);
         res.json(user);
         
     } catch (error) {
