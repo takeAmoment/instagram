@@ -13,7 +13,10 @@ router.get("/user/:id", auth, async (req, res) => {
             return res.status(404).json({message: "User was not found"});
         }
         
-        const posts = await Post.find({postedBy: req.params.id}).populate("postedBy", "_id name");
+        const posts = await Post.find({postedBy: req.params.id})
+        .sort({_id:-1})
+        .populate("postedBy", "_id name avatar")
+        .populate("comments.postedBy", "_id name avatar");;
         
         res.json({user, posts});
 
