@@ -12,17 +12,3 @@
     gap: 1rem;
     margin-top: 10px;
 }
-.comment__item {
-    .comment {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        gap: 1rem;
-        .comment__text {
-            width: 100%;
-            flex-direction: row;
-            gap: 1rem;
-            margin-top: 10px;
-        }
-    }
-}

@@ -20,3 +20,21 @@
     margin: 0;
     margin-bottom: 0 !important;
 }
+.comment__list{
+    .comment__item {
+        .comment {
+            display: flex;
+            width: 100% !important;
+            flex-direction: row;
+            justify-content: space-between;
+            gap: 1rem;
+            .comment__text {
+                display: flex;
+                width: 100%;
+                flex-direction: row;
+                gap: 1rem;
+                margin-top: 10px;
+            }
+        }
+    }
+}
