@@ -16,19 +16,23 @@ import { Content } from 'antd/es/layout/layout';
 import { Image } from 'antd';
 import React, { FC, useState } from 'react';
 import styles from './Profile.module.scss';
-import { EditForm, ProfileProps } from 'types/types';
+import { EditForm, ProfileProps, UsersPost } from 'types/types';
 import { useLocation } from 'react-router-dom';
 import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import TextArea from 'antd/es/input/TextArea';
 import { RcFile } from 'antd/es/upload';
-import { updateUserApi } from 'api';
+import { useAppDispath } from 'hooks/hooks';
+import { updateUser } from 'features/auth.slice';
+import Post from 'components/Post/Post';
 const { Title, Paragraph, Text } = Typography;
 
-const Profile: FC<ProfileProps> = ({ posts, user, follow, unfollow, refreshUser }) => {
+const Profile: FC<ProfileProps> = ({ posts, user, follow, unfollow }) => {
+  const dispatch = useAppDispath();
   const location = useLocation();
   const [form] = Form.useForm();
   const userId = localStorage.getItem('userId');
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [post, setPost] = useState<UsersPost>();
   const uploadButton = (
     <div>
       <PlusOutlined />
@@ -52,24 +56,26 @@ const Profile: FC<ProfileProps> = ({ posts, user, follow, unfollow, refreshUser 
     setIsModalOpen(false);
     form.resetFields(['fields']);
   };
+  const [isPostModalOpen, setIsPostModalOpen] = useState<boolean>(false);
+
+  const showPostModal = (post: UsersPost) => {
+    setPost(post);
+    setIsPostModalOpen(true);
+  };
+
+  const handlePostOk = () => {
+    setIsPostModalOpen(false);
+  };
+
+  const handlePostCancel = () => {
+    setIsPostModalOpen(false);
+  };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getFile = (e: any) => {
     if (Array.isArray(e)) {
       return e;
     }
     return e?.fileList;
-  };
-
-  const updateUser = async (formData: FormData) => {
-    try {
-      const response = await updateUserApi(formData);
-      if (refreshUser) {
-        refreshUser(response.data);
-      }
-      handleCancel();
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   const onFinish = (values: EditForm) => {
@@ -80,7 +86,8 @@ const Profile: FC<ProfileProps> = ({ posts, user, follow, unfollow, refreshUser 
     if (values.files && values.files.length > 0) {
       formData.append('file', values.files[0].originFileObj as RcFile);
     }
-    updateUser(formData);
+    dispatch(updateUser(formData));
+    handleCancel();
   };
   return (
     <Content>
@@ -95,7 +102,7 @@ const Profile: FC<ProfileProps> = ({ posts, user, follow, unfollow, refreshUser 
               className="gutter-row"
             >
               <Row justify="center">
-                <Col style={{ position: 'relative' }}>
+                <Col>
                   <Image
                     preview={false}
                     width={150}
@@ -111,20 +118,32 @@ const Profile: FC<ProfileProps> = ({ posts, user, follow, unfollow, refreshUser 
                   <Title level={3}>{user?.name}</Title>
                 </Col>
               </Row>
-              <Row justify="center">
-                <Col span={6}>
-                  <Text strong>{posts.length} posts</Text>
+              <Row justify="center" style={{ marginBottom: '10px' }}>
+                <Col xs={{ span: 8 }} sm={{ span: 8 }} md={{ span: 6 }} lg={{ span: 6 }}>
+                  <Row justify="center">
+                    <Col>
+                      <Text strong>{posts.length} posts</Text>
+                    </Col>
+                  </Row>
                 </Col>
-                <Col span={6}>
-                  <Text strong>{user?.followers.length} followers</Text>
+                <Col xs={{ span: 8 }} sm={{ span: 8 }} md={{ span: 6 }} lg={{ span: 6 }}>
+                  <Row justify="center">
+                    <Col>
+                      <Text strong>{user?.followers.length} followers</Text>
+                    </Col>
+                  </Row>
                 </Col>
-                <Col span={6}>
-                  <Text strong>{user?.following.length} following</Text>
+                <Col xs={{ span: 8 }} sm={{ span: 8 }} md={{ span: 6 }} lg={{ span: 6 }}>
+                  <Row justify="center">
+                    <Col>
+                      <Text strong>{user?.following.length} following</Text>
+                    </Col>
+                  </Row>
                 </Col>
               </Row>
               <Row justify="center">
                 <Col>
-                  <Paragraph>{user?.info}</Paragraph>
+                  <Paragraph style={{ textAlign: 'center' }}>{user?.info}</Paragraph>
                 </Col>
               </Row>
               {location.pathname !== '/profile' ? (
@@ -140,17 +159,8 @@ const Profile: FC<ProfileProps> = ({ posts, user, follow, unfollow, refreshUser 
               ) : (
                 <Row justify="center">
                   <Col>
-                    <Tooltip placement="bottom" title="Edit photo">
-                      <EditOutlined
-                        style={{
-                          fontSize: '18px',
-                          position: 'absolute',
-                          bottom: '0px',
-                          right: '0px',
-                          cursor: 'pointer',
-                        }}
-                        onClick={showModal}
-                      />
+                    <Tooltip placement="bottom" title="Edit profile">
+                      <EditOutlined onClick={showModal} style={{ fontSize: '24px' }} />
                     </Tooltip>
                   </Col>
                 </Row>
@@ -173,7 +183,12 @@ const Profile: FC<ProfileProps> = ({ posts, user, follow, unfollow, refreshUser 
                   >
                     <Row justify="center">
                       <Col>
-                        <Image src={`/uploads/${post.photo}`} />
+                        <Image
+                          src={`/uploads/${post.photo}`}
+                          preview={false}
+                          style={{ minHeight: '200px' }}
+                          onClick={() => showPostModal(post)}
+                        />
                       </Col>
                     </Row>
                   </Col>
@@ -214,8 +229,8 @@ const Profile: FC<ProfileProps> = ({ posts, user, follow, unfollow, refreshUser 
             <Form.Item name="email">
               <Input />
             </Form.Item>
-            <Form.Item name="info">
-              <TextArea />
+            <Form.Item name="info" extra="Maximum 120 characters">
+              <TextArea maxLength={120} rows={4} />
             </Form.Item>
             <Form.Item name="files" valuePropName="fileList" getValueFromEvent={getFile}>
               <Upload
@@ -235,6 +250,16 @@ const Profile: FC<ProfileProps> = ({ posts, user, follow, unfollow, refreshUser 
               </Upload>
             </Form.Item>
           </Form>
+        </Modal>
+        <Modal
+          open={isPostModalOpen}
+          onOk={handlePostOk}
+          bodyStyle={{ maxHeight: '400px', overflowY: 'scroll' }}
+          className={styles.modal__post}
+          onCancel={handlePostCancel}
+          footer={false}
+        >
+          {post && <Post post={post} isModalPost={true} />}
         </Modal>
       </div>
     </Content>

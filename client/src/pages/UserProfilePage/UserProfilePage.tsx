@@ -1,4 +1,6 @@
+import { notification } from 'antd';
 import { followApi, getUserByIdApi, unfollowApi } from 'api';
+import { isAxiosError } from 'axios';
 import Profile from 'components/Profile/Profile';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -6,7 +8,7 @@ import { IUser, UsersPost } from 'types/types';
 
 const UserProfilePage = () => {
   const [posts, setPosts] = useState<UsersPost[] | []>([]);
-  const [user, setUser] = useState<IUser>();
+  const [user, setUser] = useState<IUser | null>(null);
   const { id } = useParams();
 
   const loadData = async () => {
@@ -17,7 +19,13 @@ const UserProfilePage = () => {
         setUser(response.data.user);
       }
     } catch (error) {
-      console.log(error);
+      if (isAxiosError(error)) {
+        notification.error({
+          message: 'Error ' + error.response?.status,
+          description: error.response?.data.message,
+        });
+        throw new Error(error.message);
+      }
     }
   };
 
@@ -28,7 +36,13 @@ const UserProfilePage = () => {
         setUser(response.data);
       }
     } catch (error) {
-      console.log(error);
+      if (isAxiosError(error)) {
+        notification.error({
+          message: 'Error ' + error.response?.status,
+          description: error.response?.data.message,
+        });
+        throw new Error(error.message);
+      }
     }
   };
   const unfollow = async () => {
@@ -38,7 +52,13 @@ const UserProfilePage = () => {
         setUser(response.data);
       }
     } catch (error) {
-      console.log(error);
+      if (isAxiosError(error)) {
+        notification.error({
+          message: 'Error ' + error.response?.status,
+          description: error.response?.data.message,
+        });
+        throw new Error(error.message);
+      }
     }
   };
 

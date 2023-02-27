@@ -32,7 +32,7 @@ const HomePage = () => {
             dataSource={allPosts}
             renderItem={(item: UsersPost) => (
               <List.Item>
-                <Post key={item._id} post={item} />
+                <Post key={item._id} post={item} isModalPost={false} />
               </List.Item>
             )}
           />

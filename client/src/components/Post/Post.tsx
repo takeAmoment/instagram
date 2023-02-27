@@ -25,7 +25,7 @@ import { CommentInfo, PostProps, IComment } from 'types/types';
 import styles from './Post.module.scss';
 const { Title, Paragraph, Text } = Typography;
 
-const Post: FC<PostProps> = ({ post }) => {
+const Post: FC<PostProps> = ({ post, isModalPost }) => {
   const id = localStorage.getItem('userId');
   const dispatch = useAppDispath();
   const [form] = Form.useForm();
@@ -93,7 +93,7 @@ const Post: FC<PostProps> = ({ post }) => {
 
   return (
     <Card
-      className={styles.card}
+      className={isModalPost ? styles.modal__card : styles.card}
       bodyStyle={{ padding: '24px 24px 10px 24px' }}
       cover={
         <>
@@ -123,7 +123,7 @@ const Post: FC<PostProps> = ({ post }) => {
               </Dropdown>
             )}
           </div>
-          <img alt="example" src={`./uploads/${post.photo}`} />
+          <img alt="example" src={`/uploads/${post.photo}`} />
         </>
       }
     >

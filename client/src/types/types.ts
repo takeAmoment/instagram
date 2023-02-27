@@ -8,6 +8,7 @@ export interface RegisterInfo {
 export interface UserData {
   userId: string;
   token: string;
+  user: IUser | null;
 }
 export interface AuthInitialState {
   userData: UserData;
@@ -57,6 +58,7 @@ export interface PostInitialState {
 
 export interface PostProps {
   post: UsersPost;
+  isModalPost: boolean;
 }
 
 export interface PostId {
@@ -74,10 +76,9 @@ export interface RemoveCommentRequest {
 
 export interface ProfileProps {
   posts: UsersPost[] | [];
-  user: IUser | undefined;
+  user: IUser | null;
   follow?: () => void;
   unfollow?: () => void;
-  refreshUser?: (user: IUser) => void;
 }
 
 export interface IUser {

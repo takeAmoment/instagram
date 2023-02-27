@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { notification } from 'antd';
+import { getUserApi, updateUserApi } from 'api';
 import { loginApi, registerApi } from 'api/auth';
 import { isAxiosError } from 'axios';
 import { AuthInitialState, RegisterInfo } from 'types/types';
@@ -8,6 +9,7 @@ const initialState: AuthInitialState = {
   userData: {
     userId: '',
     token: '',
+    user: null,
   },
   status: 'idle',
   isRegistered: false,
@@ -44,6 +46,38 @@ export const loginUser = createAsyncThunk('user/login', async (request: Register
   }
 });
 
+export const getUser = createAsyncThunk('user/get', async () => {
+  try {
+    const response = await getUserApi();
+    return response.data;
+  } catch (error) {
+    if (isAxiosError(error)) {
+      console.log(error.response?.data);
+      notification.error({
+        message: 'Error ' + error.response?.status,
+        description: error.response?.data.message,
+      });
+      throw new Error(error.message);
+    }
+  }
+});
+
+export const updateUser = createAsyncThunk('user/update', async (request: FormData) => {
+  try {
+    const response = await updateUserApi(request);
+    return response.data;
+  } catch (error) {
+    if (isAxiosError(error)) {
+      console.log(error.response?.data);
+      notification.error({
+        message: 'Error ' + error.response?.status,
+        description: error.response?.data.message,
+      });
+      throw new Error(error.message);
+    }
+  }
+});
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -55,6 +89,7 @@ export const authSlice = createSlice({
       state.userData = {
         token: '',
         userId: '',
+        user: null,
       };
     },
   },
@@ -89,6 +124,31 @@ export const authSlice = createSlice({
         }
       })
       .addCase(loginUser.rejected, (state) => {
+        state.status = 'failed';
+      })
+      .addCase(getUser.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(getUser.fulfilled, (state, action) => {
+        state.status = 'idle';
+        if (action.payload) {
+          state.userData.user = action.payload;
+        }
+      })
+      .addCase(getUser.rejected, (state) => {
+        state.status = 'failed';
+        state.userData.user = null;
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.status = 'idle';
+        if (action.payload) {
+          state.userData.user = action.payload;
+        }
+      })
+      .addCase(updateUser.rejected, (state) => {
         state.status = 'failed';
       });
   },

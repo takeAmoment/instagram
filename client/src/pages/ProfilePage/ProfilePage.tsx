@@ -1,35 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import styles from './ProfilePage.module.scss';
+import React, { useEffect } from 'react';
 
 import { useAppDispath, useAppSelector } from 'hooks/hooks';
-import { getUserApi } from '../../api/index';
 import { getUserPosts } from 'features/post.slice';
 import Profile from 'components/Profile/Profile';
-import { IUser } from 'types/types';
+import { getUser } from 'features/auth.slice';
 
 const ProfilePage = () => {
   const posts = useAppSelector((state) => state.post.usersPosts);
-  const [user, setUser] = useState<IUser>();
+  const { user } = useAppSelector((state) => state.auth.userData);
   const dispatch = useAppDispath();
 
-  const refreshUser = (user: IUser) => {
-    setUser(user);
-  };
-  const getUser = async () => {
-    try {
-      const response = await getUserApi();
-      setUser(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    getUser();
+    dispatch(getUser());
     dispatch(getUserPosts());
   }, [dispatch]);
 
-  return <Profile posts={posts} user={user} refreshUser={refreshUser} />;
+  return <Profile posts={posts} user={user} />;
 };
 
 export default ProfilePage;
