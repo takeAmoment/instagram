@@ -88,7 +88,7 @@ const LoginPage = () => {
                   },
                 ]}
               >
-                <Input.Password />
+                <Input.Password autoComplete="on" />
               </Form.Item>
               <Form.Item wrapperCol={{ offset: 6, span: 8 }}>
                 {location.pathname === '/register' ? (
