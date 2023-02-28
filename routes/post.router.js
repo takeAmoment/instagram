@@ -76,7 +76,7 @@ router.put("/like", auth, async (req, res) => {
             $push: {likes: req.user._id}
         }, options).populate("comments.postedBy", "_id name avatar").populate("postedBy", "_id name avatar");
         res.json(updatedPost);
-        
+            
     } catch (error) {
        res.status(500).json({message: "Server error"}); 
     }
@@ -87,7 +87,7 @@ router.put("/unlike", auth, async (req, res) => {
         const options = { new: true };
         const updatedPost = await Post.findByIdAndUpdate(req.body.postId, {
             $pull: {likes: req.user._id}
-        }, options).populate("comments.postedBy", "_id name avatar avatar").populate("postedBy", "_id name avatar");
+        }, options).populate("comments.postedBy", "_id name avatar").populate("postedBy", "_id name avatar");
         res.json(updatedPost);
         
     } catch (error) {
@@ -104,7 +104,7 @@ router.put("/addComment", auth, async (req, res) => {
         }
         const updatedPost = await Post.findByIdAndUpdate(req.body.postId, {
             $push: {comments: comment}
-        }, options).populate("comments.postedBy", "_id name").populate("postedBy", "_id name");
+        }, options).populate("comments.postedBy", "_id name avatar").populate("postedBy", "_id name avatar");
         res.json(updatedPost);
         
     } catch (error) {
