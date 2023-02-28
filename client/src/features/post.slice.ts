@@ -3,21 +3,29 @@ import {
   addCommentApi,
   createPostApi,
   deletePostApi,
+  followApi,
   getAllPostsApi,
   getFollowingPostsApi,
+  getUserByIdApi,
   getUserPostsApi,
   likePostApi,
   removeCommentApi,
+  unfollowApi,
   unlikePostApi,
 } from 'api';
 import { isAxiosError } from 'axios';
-import { CommentInfo, PostId, PostInitialState, RemoveCommentRequest } from 'types/types';
+import { CommentInfo, FollowId, PostId, PostInitialState, RemoveCommentRequest } from 'types/types';
 import { notification } from 'antd';
 
 const initialState: PostInitialState = {
   usersPosts: [],
   allPosts: [],
   followingPosts: [],
+  selectedUser: {
+    user: null,
+    posts: [],
+  },
+  currentPost: null,
   status: 'idle',
   isCreated: false,
 };
@@ -159,10 +167,107 @@ export const getFollowingPosts = createAsyncThunk('followingPosts/get', async ()
   }
 });
 
+export const getUserById = createAsyncThunk('user/getById', async (id: string) => {
+  try {
+    const response = await getUserByIdApi(id);
+    return response.data;
+  } catch (error) {
+    if (isAxiosError(error)) {
+      notification.error({
+        message: 'Error' + error.response?.status,
+        description: error.response?.data.message,
+      });
+      throw new Error(error.message);
+    }
+  }
+});
+
+export const followToUser = createAsyncThunk('user/follow', async (request: FollowId) => {
+  try {
+    const response = await followApi(request);
+    return response.data;
+  } catch (error) {
+    if (isAxiosError(error)) {
+      notification.error({
+        message: 'Error' + error.response?.status,
+        description: error.response?.data.message,
+      });
+      throw new Error(error.message);
+    }
+  }
+});
+export const unfollowToUser = createAsyncThunk('user/unfollow', async (request: FollowId) => {
+  try {
+    const response = await unfollowApi(request);
+    return response.data;
+  } catch (error) {
+    if (isAxiosError(error)) {
+      notification.error({
+        message: 'Error' + error.response?.status,
+        description: error.response?.data.message,
+      });
+      throw new Error(error.message);
+    }
+  }
+});
+
 export const postSlice = createSlice({
   name: 'post',
   initialState,
-  reducers: {},
+  reducers: {
+    changeAllPosts: (state) => {
+      const currentPost = state.currentPost;
+      if (currentPost) {
+        const newPost = state.allPosts.map((post) => {
+          if (post._id === currentPost._id) {
+            return currentPost;
+          } else {
+            return post;
+          }
+        });
+        state.allPosts = newPost;
+      }
+    },
+    changeFollowingPosts: (state) => {
+      const currentPost = state.currentPost;
+      if (currentPost) {
+        const newPost = state.followingPosts.map((post) => {
+          if (post._id === currentPost._id) {
+            return currentPost;
+          } else {
+            return post;
+          }
+        });
+        state.followingPosts = newPost;
+      }
+    },
+    changeUsersPosts: (state) => {
+      const currentPost = state.currentPost;
+      if (currentPost) {
+        const newPost = state.usersPosts.map((post) => {
+          if (post._id === currentPost._id) {
+            return currentPost;
+          } else {
+            return post;
+          }
+        });
+        state.usersPosts = newPost;
+      }
+    },
+    changeSelectedUsersPosts: (state) => {
+      const currentPost = state.currentPost;
+      if (currentPost) {
+        const newPost = state.selectedUser.posts.map((post) => {
+          if (post._id === currentPost._id) {
+            return currentPost;
+          } else {
+            return post;
+          }
+        });
+        state.selectedUser.posts = newPost;
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createPost.pending, (state) => {
@@ -207,48 +312,16 @@ export const postSlice = createSlice({
         state.usersPosts = [];
       })
       .addCase(likePost.fulfilled, (state, action) => {
-        const newPosts = state.allPosts.map((post) => {
-          if (post._id === action.payload._id) {
-            return action.payload;
-          } else {
-            return post;
-          }
-        });
-        state.allPosts = newPosts;
+        state.currentPost = action.payload;
       })
       .addCase(unlikePost.fulfilled, (state, action) => {
-        const newPosts = state.allPosts.map((post) => {
-          if (post._id === action.payload._id) {
-            return action.payload;
-          } else {
-            return post;
-          }
-        });
-        state.allPosts = newPosts;
+        state.currentPost = action.payload;
       })
       .addCase(addComment.fulfilled, (state, action) => {
-        if (action.payload) {
-          const newPost = state.allPosts.map((post) => {
-            if (post._id === action.payload._id) {
-              return action.payload;
-            } else {
-              return post;
-            }
-          });
-          state.allPosts = newPost;
-        }
+        state.currentPost = action.payload;
       })
       .addCase(removeComment.fulfilled, (state, action) => {
-        if (action.payload) {
-          const newPost = state.allPosts.map((post) => {
-            if (post._id === action.payload._id) {
-              return action.payload;
-            } else {
-              return post;
-            }
-          });
-          state.allPosts = newPost;
-        }
+        state.currentPost = action.payload;
       })
       .addCase(deletePost.fulfilled, (state, action) => {
         if (action.payload) {
@@ -266,8 +339,52 @@ export const postSlice = createSlice({
       .addCase(getFollowingPosts.rejected, (state) => {
         state.status = 'failed';
         state.followingPosts = [];
+      })
+      .addCase(getUserById.pending, (state) => {
+        state.status = 'loading';
+        state.selectedUser = {
+          user: null,
+          posts: [],
+        };
+      })
+      .addCase(getUserById.fulfilled, (state, action) => {
+        state.status = 'idle';
+        if (action.payload) {
+          state.selectedUser = action.payload;
+        }
+      })
+      .addCase(getUserById.rejected, (state) => {
+        state.status = 'failed';
+        state.selectedUser = {
+          user: null,
+          posts: [],
+        };
+      })
+      .addCase(followToUser.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(followToUser.fulfilled, (state, action) => {
+        state.status = 'idle';
+        if (action.payload) {
+          state.selectedUser.user = action.payload;
+        }
+      })
+      .addCase(followToUser.rejected, (state) => {
+        state.status = 'failed';
+      })
+      .addCase(unfollowToUser.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(unfollowToUser.fulfilled, (state, action) => {
+        state.status = 'idle';
+        if (action.payload) {
+          state.selectedUser.user = action.payload;
+        }
+      })
+      .addCase(unfollowToUser.rejected, (state) => {
+        state.status = 'failed';
       });
   },
 });
-
+export const { changeAllPosts, changeFollowingPosts, changeUsersPosts } = postSlice.actions;
 export const postReducer = postSlice.reducer;

@@ -16,17 +16,27 @@ import {
   List,
 } from 'antd';
 import Comment from 'components/Comment/Comment';
-import { addComment, deletePost, likePost, removeComment, unlikePost } from 'features/post.slice';
+import {
+  addComment,
+  changeAllPosts,
+  changeFollowingPosts,
+  changeUsersPosts,
+  deletePost,
+  likePost,
+  removeComment,
+  unlikePost,
+} from 'features/post.slice';
 import { useAppDispath } from 'hooks/hooks';
 import { HeartSvg } from 'icons/icons';
 import React, { FC, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { CommentInfo, PostProps, IComment } from 'types/types';
 import styles from './Post.module.scss';
 const { Title, Paragraph, Text } = Typography;
 
 const Post: FC<PostProps> = ({ post, isModalPost }) => {
   const id = localStorage.getItem('userId');
+  const location = useLocation();
   const dispatch = useAppDispath();
   const [form] = Form.useForm();
   const myPost = post.postedBy._id === id;
@@ -45,30 +55,44 @@ const Post: FC<PostProps> = ({ post, isModalPost }) => {
     setIsModalOpen(false);
   };
 
+  const checkLocation = () => {
+    if (location.pathname === '/') {
+      dispatch(changeAllPosts());
+    } else if (location.pathname === '/profile') {
+      dispatch(changeUsersPosts());
+    } else if (location.pathname === '/followingposts') {
+      dispatch(changeFollowingPosts());
+    }
+  };
+
   const handleClick = async () => {
     const id = localStorage.getItem('userId');
     if (id && !post.likes.includes(id)) {
       const postId = post._id;
-      dispatch(likePost({ postId: postId }));
+      await dispatch(likePost({ postId: postId }));
+      checkLocation();
     }
   };
 
-  const handleUnlike = () => {
+  const handleUnlike = async () => {
     const id = localStorage.getItem('userId');
     if (id && post.likes.includes(id)) {
       const postId = post._id;
-      dispatch(unlikePost({ postId: postId }));
+      await dispatch(unlikePost({ postId: postId }));
+      checkLocation();
     }
   };
 
-  const onFinish = (value: CommentInfo) => {
+  const onFinish = async (value: CommentInfo) => {
     const postId = post._id;
-    dispatch(addComment({ text: value.text, postId: postId }));
+    await dispatch(addComment({ text: value.text, postId: postId }));
+    checkLocation();
     form.resetFields();
   };
 
-  const handleDeleteComment = (comment: IComment) => {
-    dispatch(removeComment({ _id: comment._id, postId: post._id }));
+  const handleDeleteComment = async (comment: IComment) => {
+    await dispatch(removeComment({ _id: comment._id, postId: post._id }));
+    checkLocation();
   };
 
   const handleDeletePost = () => {

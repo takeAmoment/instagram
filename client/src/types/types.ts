@@ -48,11 +48,17 @@ export interface UsersPost {
   likes: string[];
   comments: IComment[];
 }
+export interface SelectedUser {
+  user: IUser | null;
+  posts: UsersPost[];
+}
 
 export interface PostInitialState {
   usersPosts: UsersPost[];
   allPosts: UsersPost[];
   followingPosts: UsersPost[];
+  selectedUser: SelectedUser;
+  currentPost: UsersPost | null;
   status: 'idle' | 'loading' | 'failed';
   isCreated: boolean;
 }
@@ -110,4 +116,8 @@ export interface EditForm {
 export interface CommentProps {
   comment: IComment;
   handleDeleteComment: (comment: IComment) => void;
+}
+
+export interface FollowId {
+  followId: string;
 }
