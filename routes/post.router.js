@@ -58,7 +58,10 @@ router.post("/create", auth, async(req, res) => {
 
 router.get("/userposts", auth, async (req, res) => {
     try {
-        const posts = await Post.find({postedBy: req.user._id}).sort({_id:-1});
+        const posts = await Post.find({postedBy: req.user._id})
+        .sort({_id:-1})
+        .populate("postedBy", "_id name avatar")
+        .populate("comments.postedBy", "_id name avatar");
         res.json({posts});
         
     } catch (error) {
