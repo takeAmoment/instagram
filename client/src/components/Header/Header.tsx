@@ -1,9 +1,10 @@
-import { Button } from 'antd';
+import { MenuOutlined } from '@ant-design/icons';
+import { Button, Drawer } from 'antd';
 import { Header } from 'antd/es/layout/layout';
 import Menu from 'antd/es/menu';
 import { logout } from 'features/auth.slice';
 import { useAppDispath } from 'hooks/hooks';
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styles from './Header.module.scss';
 
@@ -16,6 +17,15 @@ const HeaderOfApp = () => {
   const handleLogout = () => {
     dispatch(logout());
     navigate('/login');
+  };
+  const [open, setOpen] = useState(false);
+
+  const showDrawer = () => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
   };
 
   const items = [
@@ -44,10 +54,49 @@ const HeaderOfApp = () => {
       <Menu
         theme="light"
         mode="horizontal"
+        className={styles.header__menu}
         selectedKeys={[location.pathname.slice(1)]}
         items={token ? itemsRegisterUser : items}
-        style={{ width: '100%', display: 'flex', justifyContent: 'end' }}
       />
+      <Button
+        className={styles.burger__menu}
+        type="primary"
+        shape="circle"
+        icon={<MenuOutlined className={styles.burger__icon} />}
+        onClick={showDrawer}
+      ></Button>
+      <Drawer width="320px" placement="right" onClose={onClose} open={open}>
+        <div className={styles.drawer__contant}>
+          {token ? (
+            <>
+              <Link to="/" className={styles.drawer__link} onClick={onClose}>
+                Home page
+              </Link>
+              <Link to="/profile" className={styles.drawer__link} onClick={onClose}>
+                Profile
+              </Link>
+              <Link to="/createpost" className={styles.drawer__link} onClick={onClose}>
+                Create Post
+              </Link>
+              <Link to="/followingposts" className={styles.drawer__link} onClick={onClose}>
+                Following Post
+              </Link>
+              <Link to="/login" className={styles.drawer__link} onClick={handleLogout}>
+                Logout
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className={styles.drawer__link} onClick={onClose}>
+                Login
+              </Link>
+              <Link to="/signup" className={styles.drawer__link} onClick={onClose}>
+                Sign up
+              </Link>
+            </>
+          )}
+        </div>
+      </Drawer>
     </Header>
   );
 };

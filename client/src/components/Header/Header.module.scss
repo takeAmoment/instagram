@@ -11,4 +11,41 @@ $primary-color: #36cfc9;
         font-size: 2.4rem;
         font-family: 'Grand Hotel', cursive;
     }
+    .header__menu{
+        width: 100%;
+        display: flex;
+        justify-content: end;
+    }
+}
+.drawer__contant {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+.drawer__link {
+    color: black;
+    font-size: 18px;
+    margin: 0;
+    padding: 0;
+    &:hover {
+        color: $primary-color;
+        transition: all 0.3s;
+    }
+}
+
+.burger__menu {
+    margin-top: 1rem;
+    display: none;
+}
+@media (max-width: 768px) {
+    .header{
+        .header__menu{
+            display: none;
+        }
+    }
+    .burger__menu {
+        margin-top: 1rem;
+        display: block;
+    }
 }
