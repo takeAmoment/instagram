@@ -104,7 +104,7 @@ export const authSlice = createSlice({
         state.isRegistered = true;
         notification.success({
           message: 'Hooray!',
-          description: 'User was redistered!',
+          description: 'User was registered!',
         });
       })
       .addCase(registerUser.rejected, (state) => {
