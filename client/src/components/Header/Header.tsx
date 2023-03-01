@@ -94,7 +94,7 @@ const HeaderOfApp = () => {
               <Link to="/login" className={styles.drawer__link} onClick={onClose}>
                 Login
               </Link>
-              <Link to="/signup" className={styles.drawer__link} onClick={onClose}>
+              <Link to="/register" className={styles.drawer__link} onClick={onClose}>
                 Sign up
               </Link>
             </>
