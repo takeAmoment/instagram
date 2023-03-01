@@ -40,21 +40,29 @@ const SearchPage = () => {
           <List
             style={{ width: '100%' }}
             pagination={{ position, align }}
+            split={true}
             dataSource={users}
             renderItem={(item) => (
-              <Link to={id === item._id ? '/profile' : `/profile/${item._id}`}>
-                <List.Item>
-                  <List.Item.Meta
-                    avatar={
+              <List.Item>
+                <List.Item.Meta
+                  avatar={
+                    <Link to={id === item._id ? '/profile' : `/profile/${item._id}`}>
                       <Avatar
                         src={item.avatar ? `uploads/${item.avatar}` : '/assets/profile.png'}
                       />
-                    }
-                    title={item.name}
-                    description={item.info}
-                  />
-                </List.Item>
-              </Link>
+                    </Link>
+                  }
+                  title={
+                    <Link
+                      to={id === item._id ? '/profile' : `/profile/${item._id}`}
+                      style={{ fontSize: '16px' }}
+                    >
+                      {item.name}
+                    </Link>
+                  }
+                  description={item.info}
+                />
+              </List.Item>
             )}
           />
         ) : (
