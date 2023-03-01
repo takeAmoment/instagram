@@ -112,6 +112,20 @@ router.put("/unfollow", auth, async (req, res) => {
     } catch (error) {
         res.status(500).json({message: "Server error"});
     }
+});
+
+router.get('/finduser', auth, async (req, res) => {
+    try {
+        const user = await User.find({ name: new RegExp(req.query.search, "i")})
+          .select("_id name avatar info");
+        if (!user) {
+            res.status(409).json({message: "This user does not exist"})
+        }
+        res.json(user);
+        
+    } catch (error) {
+        res.status(500).json({message: "Server error"});
+    }
 })
 
 module.exports = router;

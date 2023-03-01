@@ -16,3 +16,6 @@ export const updateUserApi = async (request: FormData) =>
     data: request,
     headers: { 'Content-Type': 'multipart/form-data' },
   });
+
+export const findUserApi = async (query: string) =>
+  await axios.get(`/finduser`, { params: { search: query } });

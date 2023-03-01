@@ -10,6 +10,7 @@ import ProtectedRoute from 'components/ProtectedRoute/ProtectedRoute';
 import UserProfilePage from 'pages/UserProfilePage/UserProfilePage';
 import FollowingPostsPage from 'pages/FollowingPostsPage/FollowingPostPage';
 import './App.scss';
+import SearchPage from 'pages/SearchPage/SearchPage';
 
 function App() {
   return (
@@ -54,6 +55,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <FollowingPostsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/search"
+            element={
+              <ProtectedRoute>
+                <SearchPage />
               </ProtectedRoute>
             }
           />

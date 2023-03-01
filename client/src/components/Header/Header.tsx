@@ -33,6 +33,7 @@ const HeaderOfApp = () => {
     { label: <Link to="/register">Sign up</Link>, key: 'register' },
   ];
   const itemsRegisterUser = [
+    { label: <Link to="/search">Search</Link>, key: 'search' },
     { label: <Link to="/profile">Profile</Link>, key: 'profile' },
     { label: <Link to="/createpost">Create post</Link>, key: 'createpost' },
     { label: <Link to="/followingposts">Posts</Link>, key: 'followingposts' },
@@ -71,6 +72,9 @@ const HeaderOfApp = () => {
             <>
               <Link to="/" className={styles.drawer__link} onClick={onClose}>
                 Home page
+              </Link>
+              <Link to="/search" className={styles.drawer__link} onClick={onClose}>
+                Search
               </Link>
               <Link to="/profile" className={styles.drawer__link} onClick={onClose}>
                 Profile
