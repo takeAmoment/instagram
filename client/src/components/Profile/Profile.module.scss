@@ -4,6 +4,12 @@
     padding: 1rem;
     margin-top: 2px;
 }
+.spin__container{
+    display: flex;
+    min-height: 85vh;
+    align-items: center;
+    justify-content: center;
+}
 .profile {
     margin-top: 3rem;
     margin-bottom: 3rem;

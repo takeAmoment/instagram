@@ -21,7 +21,9 @@ import {
   changeAllPosts,
   changeFollowingPosts,
   changeUsersPosts,
+  deleteCurrentPost,
   deletePost,
+  deletePostFromAll,
   likePost,
   removeComment,
   unlikePost,
@@ -95,8 +97,17 @@ const Post: FC<PostProps> = ({ post, isModalPost }) => {
     checkLocation();
   };
 
-  const handleDeletePost = () => {
-    dispatch(deletePost(post._id));
+  const checkPath = () => {
+    if (location.pathname === '/') {
+      dispatch(deletePostFromAll());
+    } else if (location.pathname === '/profile') {
+      dispatch(deleteCurrentPost());
+    }
+  };
+
+  const handleDeletePost = async () => {
+    await dispatch(deletePost(post._id));
+    checkPath();
   };
 
   const HeartIcon = (props: Partial<CustomIconComponentProps>) => (

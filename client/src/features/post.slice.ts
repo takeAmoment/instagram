@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   addCommentApi,
   createPostApi,
@@ -14,7 +14,14 @@ import {
   unlikePostApi,
 } from 'api';
 import { isAxiosError } from 'axios';
-import { CommentInfo, FollowId, PostId, PostInitialState, RemoveCommentRequest } from 'types/types';
+import {
+  CommentInfo,
+  FollowId,
+  PostId,
+  PostInitialState,
+  RemoveCommentRequest,
+  UsersPost,
+} from 'types/types';
 import { notification } from 'antd';
 
 const initialState: PostInitialState = {
@@ -267,6 +274,25 @@ export const postSlice = createSlice({
         state.selectedUser.posts = newPost;
       }
     },
+    setCurrentPost: (state, action: PayloadAction<UsersPost>) => {
+      state.currentPost = action.payload;
+    },
+    deletePostFromAll: (state) => {
+      const currentPost = state.currentPost;
+      if (currentPost) {
+        const newList = state.allPosts.filter((post) => post._id !== currentPost._id);
+        state.allPosts = newList;
+      }
+      state.currentPost = null;
+    },
+    deleteCurrentPost: (state) => {
+      const currentPost = state.currentPost;
+      if (currentPost) {
+        const newList = state.usersPosts.filter((post) => post._id !== currentPost._id);
+        state.usersPosts = newList;
+      }
+      state.currentPost = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -325,8 +351,7 @@ export const postSlice = createSlice({
       })
       .addCase(deletePost.fulfilled, (state, action) => {
         if (action.payload) {
-          const newList = state.allPosts.filter((post) => post._id !== action.payload._id);
-          state.allPosts = newList;
+          state.currentPost = action.payload;
         }
       })
       .addCase(getFollowingPosts.pending, (state) => {
@@ -386,5 +411,12 @@ export const postSlice = createSlice({
       });
   },
 });
-export const { changeAllPosts, changeFollowingPosts, changeUsersPosts } = postSlice.actions;
+export const {
+  changeAllPosts,
+  changeFollowingPosts,
+  changeUsersPosts,
+  setCurrentPost,
+  deleteCurrentPost,
+  deletePostFromAll,
+} = postSlice.actions;
 export const postReducer = postSlice.reducer;
